@@ -1,0 +1,10 @@
+/* @import "../../styles/custom-media.css";
+@import "../typography.module.css"; */
+
+.root {
+  padding: 24px;
+  background-color: #edffe3;
+  border-radius: 25px;
+  display: flex;
+  align-items: flex-start;
+}

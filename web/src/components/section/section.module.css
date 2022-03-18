@@ -1,0 +1,16 @@
+/* @import "../../styles/custom-media.css";
+@import "../typography.module.css"; */
+
+.root {
+}
+
+.sectionTitle {
+  color: var(--color-accent);
+  text-transform: uppercase;
+  padding: 36px 24px 8px;
+
+  @nest &::before {
+    content: "➜";
+    margin-right: 16px;
+  }
+}

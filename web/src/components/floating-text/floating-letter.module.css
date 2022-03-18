@@ -1,0 +1,26 @@
+@import "../../styles/custom-media.css";
+@import "../typography.module.css";
+
+.root {
+  display: inline-block;
+  /* font-size: var(--font-title1-size); */
+  white-space: pre;
+  transition: transform 400ms linear;
+  pointer-events: none;
+
+  @nest & span {
+    display: inherit;
+    transition: inherit;
+    pointer-events: none;
+  }
+}
+
+.parked {
+  transition-timing-function: cubic-bezier(0.96, -0.02, 0.88, 0.46);
+  transition-duration: 400ms !important;
+
+  @nest & span {
+    transition-timing-function: inherit;
+    transition-duration: 400ms !important;
+  }
+}

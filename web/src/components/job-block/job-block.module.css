@@ -1,0 +1,39 @@
+/* @import "../../styles/custom-media.css";
+@import "../typography.module.css"; */
+
+.root {
+  margin-bottom: 24px;
+  display: flex;
+}
+
+.content {
+  flex-grow: 1;
+  padding: 16px 24px;
+  background-color: white;
+  border-radius: 25px;
+
+  @nest & ul {
+    padding-left: 24px;
+  }
+}
+
+.logoContainer {
+  max-width: 100px;
+  height: 100px;
+  margin-right: 24px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 5px solid white;
+
+  @nest & img {
+    width: 100%;
+    object-fit: cover;
+  }
+}
+
+.companyName {
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 16px;
+  color: #6874e8;
+}

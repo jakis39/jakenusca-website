@@ -1,0 +1,38 @@
+/* @import "../../styles/custom-media.css";
+@import "../typography.module.css"; */
+@import "../../../styles/custom-properties.css";
+
+.root {
+}
+
+.container {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+
+  @nest & > * {
+    flex: 1 0 90%;
+  }
+
+  @nest & .content {
+    padding: 16px 24px;
+    background-color: white;
+    border-radius: 25px;
+    margin-top: 24px;
+  }
+}
+
+.imageContainer {
+  height: 150px;
+  width: 150px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  margin-right: 24px;
+  border: 1px solid white;
+
+  @nest & img {
+    height: 100%;
+    object-fit: cover;
+  }
+}

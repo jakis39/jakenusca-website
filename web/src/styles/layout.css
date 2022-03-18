@@ -1,9 +1,10 @@
-@import './custom-properties.css';
+@import "./custom-properties.css";
 
 html {
   font-family: var(--font-family-sans);
   font-size: var(--font-base-size);
   line-height: var(--font-base-line-height);
+  overflow: hidden;
 }
 
 body {
@@ -11,11 +12,13 @@ body {
   background: var(--color-white);
   color: var(--color-black);
   margin: 0;
+  background: linear-gradient(125deg, var(--gradient-1), var(--gradient-2));
+  overflow: auto;
 }
 
 html,
 body,
-body > div,
-body > div > div {
+body > div#___gatsby,
+body > div#___gatsby > div {
   height: 100%;
 }

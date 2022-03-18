@@ -1,0 +1,27 @@
+/* @import "../../styles/custom-media.css";
+@import "../typography.module.css"; */
+
+.root {
+}
+
+.content {
+  padding: 16px 24px;
+  background-color: white;
+  border-radius: 25px;
+}
+
+.imageContainer {
+  height: 150px;
+  width: 150px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  margin-right: 24px;
+  border: 1px solid white;
+
+  @nest & img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+}
