@@ -1,5 +1,7 @@
-@import "./custom-properties.css";
+import { createGlobalStyle } from "styled-components";
+// import { theme } from "./theme";
 
+const GlobalStyle = createGlobalStyle`
 html {
   font-family: var(--font-family-sans);
   font-size: var(--font-base-size);
@@ -12,7 +14,7 @@ body {
   background: var(--color-white);
   color: var(--color-black);
   margin: 0;
-  background: linear-gradient(125deg, var(--gradient-1), var(--gradient-2));
+  background: linear-gradient(125deg, var(--base-color-gradient-1), var(--base-color-gradient-2));
   overflow: auto;
 }
 
@@ -22,3 +24,7 @@ body > div#___gatsby,
 body > div#___gatsby > div {
   height: 100%;
 }
+
+`;
+
+export default GlobalStyle;

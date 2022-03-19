@@ -1,16 +1,25 @@
-import React from "react";
-import { cn } from "../lib/helpers";
-
-import * as styles from "./container.module.css";
+import styled, { css } from "styled-components";
 
 export interface ContainerProps {
   grow?: boolean;
-  children?: NonNullable<React.ReactNode>;
 }
 
-const Container = (props: ContainerProps) => {
-  const { grow = false, children } = props;
-  return <div className={cn(styles.root, grow && styles.grow)}>{children}</div>;
-};
+const Container = styled.div<ContainerProps>`
+  box-sizing: border-box;
+  max-width: 960px;
+  padding: 1.5em;
+  margin: 0 auto;
+
+  @media (--media-min-small) {
+    padding: 2em;
+  }
+
+  ${({ grow }) =>
+    grow &&
+    css`
+      flex-grow: 1;
+      position: relative;
+    `}
+`;
 
 export default Container;

@@ -10,14 +10,11 @@ import GraphQLErrorList from "../components/graphql-error-list";
 import SEO from "../components/seo";
 import Layout from "../containers/layout";
 import { FloatingText } from "../components/floating-text";
-import { cn } from "../lib/helpers";
 
-import * as styles from "./index.module.css";
-import { title1 } from "../components/typography.module.css";
-// import { title1 } from "../components/typography.module.css";
 import useWindowDimensions from "../lib/useWindowDimensions";
-import { AboutSection } from "../components/sections/about-section/about-section";
-import { WorkSection } from "../components/sections/work-section/work-section";
+import { AboutSection } from "../components/sections/about-section";
+import { WorkSection } from "../components/sections/work-section";
+import styled from "styled-components";
 
 export const query = graphql`
   query IndexPageQuery {
@@ -105,24 +102,34 @@ const IndexPage = props => {
   return (
     <Layout>
       <SEO title={site.title} description={site.description} keywords={site.keywords} />
-      <Container grow>
-        <div className={styles.root}>
-          <span className={cn(title1, styles.name)}>
-            <FloatingText
-            // parked
+      <IndexContainer grow>
+        <Name>
+          <FloatingText
+            parked
             // parked={parked}
             // stackWords={isSmall}
-            >
-              Jake Nusca
-            </FloatingText>
-          </span>
+          >
+            Jake Nusca
+          </FloatingText>
+        </Name>
 
-          <AboutSection content={site.description} />
-          <WorkSection jobs={jobs} />
-        </div>
-      </Container>
+        <AboutSection content={site.description} />
+        <WorkSection jobs={jobs} />
+      </IndexContainer>
     </Layout>
   );
 };
 
 export default IndexPage;
+
+const IndexContainer = styled(Container)`
+  display: flex;
+  flex-direction: column;
+`;
+
+const Name = styled.span`
+  font-family: "Bungee Shade";
+  font-size: 80px;
+  color: #6874e8;
+  margin-bottom: 36px;
+`;

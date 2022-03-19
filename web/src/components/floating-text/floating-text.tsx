@@ -42,15 +42,19 @@ export const FloatingText = (props: FloatingTextProps) => {
     >
       {stackWords
         ? wordList.map((word, index) => (
-            <>
-              <span>
-                {word.split("").map(char => (
-                  <FloatingLetter park={park}>{char}</FloatingLetter>
-                ))}
-              </span>
-            </>
+            // <>
+            <span key={word + index}>
+              {word.split("").map(char => (
+                <FloatingLetter park={park}>{char}</FloatingLetter>
+              ))}
+            </span>
+            // </>
           ))
-        : children.split("").map(char => <FloatingLetter park={park}>{char}</FloatingLetter>)}
+        : children.split("").map((char, index) => (
+            <FloatingLetter key={char + index} park={park}>
+              {char}
+            </FloatingLetter>
+          ))}
     </span>
   );
 };
