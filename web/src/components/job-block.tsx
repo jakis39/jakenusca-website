@@ -49,6 +49,7 @@ const LogoContainer = styled.div`
   border-radius: 50%;
   overflow: hidden;
   border: 5px solid white;
+  flex-shrink: 0;
 
   & img {
     width: 100%;

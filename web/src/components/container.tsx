@@ -18,7 +18,7 @@ const Container = styled.div<ContainerProps>`
     grow &&
     css`
       flex-grow: 1;
-      position: relative;
+      // position: relative;
     `}
 `;
 

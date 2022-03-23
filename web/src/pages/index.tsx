@@ -11,10 +11,11 @@ import SEO from "../components/seo";
 import Layout from "../containers/layout";
 import { FloatingText } from "../components/floating-text";
 
-import useWindowDimensions from "../lib/useWindowDimensions";
+import useWindowDimensions from "../hooks/useWindowDimensions";
 import { AboutSection } from "../components/sections/about-section";
 import { WorkSection } from "../components/sections/work-section";
 import styled from "styled-components";
+import BouncingLetters from "../components/bouncing-letters";
 
 export const query = graphql`
   query IndexPageQuery {
@@ -103,7 +104,8 @@ const IndexPage = props => {
     <Layout>
       <SEO title={site.title} description={site.description} keywords={site.keywords} />
       <IndexContainer grow>
-        <Name>
+        <BouncingLetters />
+        {/* <Name>
           <FloatingText
             parked
             // parked={parked}
@@ -111,10 +113,10 @@ const IndexPage = props => {
           >
             Jake Nusca
           </FloatingText>
-        </Name>
+        </Name> */}
 
-        <AboutSection content={site.description} />
-        <WorkSection jobs={jobs} />
+        {/* <AboutSection content={site.description} />
+        <WorkSection jobs={jobs} /> */}
       </IndexContainer>
     </Layout>
   );
