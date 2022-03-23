@@ -93,6 +93,7 @@ const BouncingLetters = (props: BouncingLettersProps) => {
 
       if (LetterPaths[letter]) {
         newBodies.push({
+          label: letter,
           sprite: {
             path: LetterPaths[letter],
             height: letterSizeMap[letter].height,

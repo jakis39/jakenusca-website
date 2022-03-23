@@ -1,11 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useRef } from "react";
 import {
   Engine,
+  Events,
   Render,
   World,
   Bodies,
+  Body,
   Runner,
   Composite,
   Composites,
@@ -26,18 +28,25 @@ export interface Sprite {
 }
 
 export interface BouncingSpriteRect {
+  label?: string;
   sprite: Sprite;
 }
 
+const LETTER_LABEL = "FloatingLetter";
 const SHAPE_BOUNCINESS = 0.9;
 const GRAVITY_Y = 0;
 
 const MatterEnvironment = (props: MatterEnvironmentProps) => {
   const { obstacles, bodies } = props;
-  const scene = useRef(null);
   const { width, height } = useWindowDimensions({
     debounce: true
   });
+  const scene = useRef(null);
+  const [engine, setEngine] = useState<Engine>(null);
+
+  const [letterJ, setLetterJ] = useState<Body>(null);
+
+  const [initialBodyPositions, setInitialBodyPositions] = useState(null);
 
   function addWorldBounds(world, containerWidth, containerHeight) {
     const wallWidth = 300;
@@ -102,7 +111,7 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
     const spriteRatio = sprite.width / sprite.height;
     const shapeHeight = shapeSize,
       shapeWidth = shapeSize * spriteRatio;
-    return Bodies.rectangle(x, y, shapeWidth, shapeHeight, {
+    const letter = Bodies.rectangle(x, y, shapeWidth, shapeHeight, {
       restitution: SHAPE_BOUNCINESS,
       chamfer: { radius: 15 },
       render: {
@@ -115,6 +124,11 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
         }
       }
     });
+    letter.label = LETTER_LABEL;
+    if (letterJ === null) {
+      setLetterJ(letter);
+    }
+    return letter;
   }
 
   function addBodyStack(
@@ -147,18 +161,22 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
     const containerHeight = scene.current ? scene.current.clientHeight : document.body.clientHeight;
     const shapeSize = containerWidth / 12;
 
+    setInitialBodyPositions(null);
+
     // console.log(bodies.length);
 
     // create engine
-    var engine = Engine.create(),
-      world = engine.world;
+    var newEngine = Engine.create(),
+      world = newEngine.world;
 
-    engine.gravity.y = GRAVITY_Y;
+    newEngine.gravity.y = GRAVITY_Y;
+
+    setEngine(newEngine);
 
     // create renderer
     var render = Render.create({
       element: scene.current,
-      engine: engine,
+      engine: newEngine,
       options: {
         width: containerWidth,
         height: containerHeight,
@@ -173,7 +191,7 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
 
     // create runner
     var runner = Runner.create();
-    Runner.run(runner, engine);
+    Runner.run(runner, newEngine);
 
     addWorldBounds(world, containerWidth, containerHeight);
 
@@ -185,9 +203,19 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
       addBodyStack(world, bodies.length, 1, bodies, shapeSize, containerWidth, containerHeight);
     }
 
+    // Mark original positions of bodies on screen;
+    const newInitialBodyPositions = [];
+    Composite.allBodies(newEngine.world)
+      .filter(body => body.label == LETTER_LABEL)
+      .forEach((body, index) => {
+        newInitialBodyPositions.push({ ...body.position });
+      });
+    console.log(newInitialBodyPositions);
+    setInitialBodyPositions(newInitialBodyPositions);
+
     // add mouse control
     var mouse = Mouse.create(render.canvas),
-      mouseConstraint = MouseConstraint.create(engine, {
+      mouseConstraint = MouseConstraint.create(newEngine, {
         mouse: mouse
       });
     mouse.pixelRatio = window.devicePixelRatio;
@@ -210,16 +238,65 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
     return () => {
       // destroy Matter
       Render.stop(render);
-      World.clear(engine.world, false);
-      Engine.clear(engine);
+      World.clear(newEngine.world, false);
+      Engine.clear(newEngine);
       render.canvas.remove();
       render.canvas = null;
       render.context = null;
       render.textures = {};
+      setEngine(null);
     };
   }, [obstacles, bodies, width, height]);
 
-  return <MatterContainer ref={scene} />;
+  function forceMove(body, endX, endY, pct) {
+    // dx is the total distance to move in the X direction
+    let dx = endX - body.position.x;
+
+    // dy is the total distance to move in the Y direction
+    let dy = endY - body.position.y;
+
+    // use dx & dy to calculate where the current [x,y] is at a given pct
+    let x = body.position.x + (dx * pct) / 100;
+    let y = body.position.y + (dy * pct) / 100;
+
+    Body.setPosition(body, {
+      x: x,
+      y: y
+    });
+  }
+
+  function handleClick() {
+    console.log(letterJ.position);
+    Body.setStatic(letterJ, true);
+    console.log(Composite.allBodies(engine.world));
+
+    const letters = Composite.allBodies(engine.world).filter(body => body.label == LETTER_LABEL);
+    letters.forEach((body, index) => {
+      Body.setStatic(body, true);
+      // body.collisionFilter.group = -1;
+      Body.setAngle(body, 0);
+      Body.setAngularVelocity(body, 0);
+      Body.setVelocity(body, { x: 0, y: 0 });
+      console.log(body.position, initialBodyPositions[index]);
+      Body.setPosition(body, initialBodyPositions[index]);
+      Body.setStatic(body, false);
+    });
+
+    // let pct = 0;
+    // Events.on(engine, "beforeUpdate", function(event) {
+    //   if (pct < 101) {
+    //     pct = pct + 1;
+    //     forceMove(letterJ, 0, 0, pct);
+    //   }
+    // });
+  }
+
+  return (
+    <>
+      <MatterContainer ref={scene}></MatterContainer>
+      <Button onClick={handleClick}>Return</Button>
+    </>
+  );
 };
 
 export default MatterEnvironment;
