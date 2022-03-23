@@ -43,9 +43,6 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
   });
   const scene = useRef(null);
   const [engine, setEngine] = useState<Engine>(null);
-
-  const [letterJ, setLetterJ] = useState<Body>(null);
-
   const [initialBodyPositions, setInitialBodyPositions] = useState(null);
 
   function addWorldBounds(world, containerWidth, containerHeight) {
@@ -125,9 +122,6 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
       }
     });
     letter.label = LETTER_LABEL;
-    if (letterJ === null) {
-      setLetterJ(letter);
-    }
     return letter;
   }
 
@@ -248,53 +242,99 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
     };
   }, [obstacles, bodies, width, height]);
 
-  function forceMove(body, endX, endY, pct) {
-    // dx is the total distance to move in the X direction
-    let dx = endX - body.position.x;
+  // function forceMove(body, endX, endY, ticker) {
+  //   // dx is the total distance to move in the X direction
+  //   let dx = endX - body.position.x;
 
-    // dy is the total distance to move in the Y direction
-    let dy = endY - body.position.y;
+  //   // dy is the total distance to move in the Y direction
+  //   let dy = endY - body.position.y;
 
-    // use dx & dy to calculate where the current [x,y] is at a given pct
-    let x = body.position.x + (dx * pct) / 100;
-    let y = body.position.y + (dy * pct) / 100;
+  //   // use dx & dy to calculate where the current [x,y] is at a given pct
+  //   let x = body.position.x + (dx * pct) / 100;
+  //   let y = body.position.y + (dy * pct) / 100;
 
-    Body.setPosition(body, {
-      x: x,
-      y: y
-    });
-  }
+  //   Body.setPosition(body, {
+  //     x: x,
+  //     y: y
+  //   });
+  // }
 
   function handleClick() {
-    console.log(letterJ.position);
-    Body.setStatic(letterJ, true);
     console.log(Composite.allBodies(engine.world));
 
+    const currentBodyPositions = [];
     const letters = Composite.allBodies(engine.world).filter(body => body.label == LETTER_LABEL);
     letters.forEach((body, index) => {
       Body.setStatic(body, true);
-      // body.collisionFilter.group = -1;
+      body.collisionFilter.group = -1;
       Body.setAngle(body, 0);
       Body.setAngularVelocity(body, 0);
       Body.setVelocity(body, { x: 0, y: 0 });
-      console.log(body.position, initialBodyPositions[index]);
-      Body.setPosition(body, initialBodyPositions[index]);
-      Body.setStatic(body, false);
+      currentBodyPositions.push({ ...body.position });
+      //   console.log(body.position, initialBodyPositions[index]);
+      //   Body.setPosition(body, initialBodyPositions[index]);
+      //   Body.setStatic(body, false);
     });
 
-    // let pct = 0;
-    // Events.on(engine, "beforeUpdate", function(event) {
-    //   if (pct < 101) {
-    //     pct = pct + 1;
-    //     forceMove(letterJ, 0, 0, pct);
-    //   }
-    // });
+    let ticker = 0;
+    const max_tick = 15; // higher number == slower time for letters to move
+
+    function easeOutQuart(time, beginVal, delta, duration) {
+      return -delta * ((time = time / duration - 1) * time * time * time - 1) + beginVal;
+    }
+
+    function forceMove(body, endX, endY, ticker, index) {
+      // dx is the total distance to move in the X direction
+      let dx = endX - currentBodyPositions[index].x;
+
+      // dy is the total distance to move in the Y direction
+      let dy = endY - currentBodyPositions[index].y;
+
+      // use dx & dy to calculate where the current [x,y] is at a given ticker
+      let x;
+      let y;
+
+      if (ticker > max_tick - 1) {
+        x = endX;
+        y = endY;
+      } else {
+        // x = currentBodyPositions[index].x + (dx * ticker) / max_tick;
+        // y = currentBodyPositions[index].y + (dy * ticker) / max_tick;
+        x = easeOutQuart(ticker, currentBodyPositions[index].x, dx, max_tick);
+        y = easeOutQuart(ticker, currentBodyPositions[index].y, dy, max_tick);
+      }
+
+      Body.setPosition(body, {
+        x: x,
+        y: y
+      });
+    }
+
+    function beforeUpdateCallback(event) {
+      if (ticker < max_tick + 1) {
+        ticker = ticker + 1;
+        letters.forEach((letter, index) => {
+          const position = initialBodyPositions[index];
+          forceMove(letter, position.x, position.y, ticker, index);
+        });
+      } else {
+        letters.forEach((body, index) => {
+          body.collisionFilter.group = 1;
+          Body.setStatic(body, false);
+        });
+        Events.off(engine, "beforeUpdate", beforeUpdateCallback);
+      }
+    }
+
+    Events.on(engine, "beforeUpdate", beforeUpdateCallback);
   }
 
   return (
     <>
       <MatterContainer ref={scene}></MatterContainer>
-      <Button onClick={handleClick}>Return</Button>
+      <ButtonsContainer>
+        <Button onClick={handleClick}>Return</Button>
+      </ButtonsContainer>
     </>
   );
 };
@@ -309,9 +349,12 @@ const MatterContainer = styled.div`
   left: 0;
 `;
 
-const Button = styled.button`
-  display: block;
+const ButtonsContainer = styled.div`
   position: absolute;
   bottom: 20px;
   right: 20px;
+`;
+
+const Button = styled.button`
+  margin-left: 10px;
 `;
