@@ -16,11 +16,6 @@ import {
 } from "matter-js";
 import useWindowDimensions from "../hooks/useWindowDimensions";
 
-export interface MatterEnvironmentProps {
-  obstacles?: Array<HTMLElement>;
-  bodies?: Array<BouncingSpriteRect>;
-}
-
 export interface Sprite {
   path: any;
   height: number;
@@ -32,9 +27,19 @@ export interface BouncingSpriteRect {
   sprite: Sprite;
 }
 
+enum ScrollDirection {
+  Down,
+  Up
+}
+
 const LETTER_LABEL = "FloatingLetter";
 const SHAPE_BOUNCINESS = 0.9;
 const GRAVITY_Y = 0;
+
+export interface MatterEnvironmentProps {
+  obstacles?: Array<HTMLElement>;
+  bodies?: Array<BouncingSpriteRect>;
+}
 
 const MatterEnvironment = (props: MatterEnvironmentProps) => {
   const { obstacles, bodies } = props;
@@ -44,6 +49,17 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
   const scene = useRef(null);
   const [engine, setEngine] = useState<Engine>(null);
   const [initialBodyPositions, setInitialBodyPositions] = useState(null);
+  const [isResettingBodies, setIsResettingBodies] = useState(false);
+  const [bodiesAreHome, setBodiesAreHome] = useState(true);
+
+  const [scrollPosition, _setScrollPosition] = useState(0);
+  const scrollPositionRef = useRef(scrollPosition);
+  const setScrollPosition = val => {
+    scrollPositionRef.current = val;
+    _setScrollPosition(val);
+  };
+
+  const [scrollDirection, setScrollDirection] = useState<ScrollDirection>(null);
 
   function addWorldBounds(world, containerWidth, containerHeight) {
     const wallWidth = 300;
@@ -153,7 +169,7 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
   useEffect(() => {
     const containerWidth = scene.current ? scene.current.clientWidth : document.body.clientWidth;
     const containerHeight = scene.current ? scene.current.clientHeight : document.body.clientHeight;
-    const shapeSize = containerWidth / 12;
+    const shapeSize = containerWidth / 10;
 
     setInitialBodyPositions(null);
 
@@ -239,6 +255,11 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
   }, [obstacles, bodies, width, height]);
 
   function resetBodyPositions() {
+    if (isResettingBodies) {
+      return;
+    }
+    console.log("begin reset");
+    setIsResettingBodies(true);
     const currentBodyPositions = [];
     const currentBodyAngles = [];
     const letters = Composite.allBodies(engine.world).filter(body => body.label == LETTER_LABEL);
@@ -256,7 +277,7 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
     });
 
     let ticker = 0;
-    const maxTick = 50; // higher number == slower time for letters to move
+    const maxTick = 30; // higher number == slower time for letters to move
 
     function easeOutQuart(time, beginVal, delta, duration) {
       return -delta * ((time = time / duration - 1) * time * time * time - 1) + beginVal;
@@ -300,30 +321,65 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
           Body.setStatic(body, false);
         });
         Events.off(engine, "beforeUpdate", beforeUpdateCallback);
+        console.log("end reset");
+        setIsResettingBodies(false);
+        setBodiesAreHome(true);
       }
     }
 
     Events.on(engine, "beforeUpdate", beforeUpdateCallback);
   }
 
-  function doForce(test?: any) {
-    const asdf = test ?? engine;
-    if (!asdf || !asdf.world) {
+  function doForce() {
+    if (!engine || !engine.world) {
       return;
     }
     const letters = Composite.allBodies(engine.world).filter(body => body.label == LETTER_LABEL);
+    const forceDirection = scrollDirection === ScrollDirection.Down ? -1 : 1;
+    const force = 0.001 * forceDirection;
     letters.forEach((body, index) => {
       Body.applyForce(
         body,
         { x: body.position.x + 100, y: body.position.y + 20 },
-        { x: 0, y: -0.001 }
+        { x: 0, y: force }
       );
     });
+    setBodiesAreHome(false);
   }
+
+  useEffect(() => {
+    function scrollListener(e) {
+      const newScroll = document.body.scrollTop;
+      const oldScroll = scrollPositionRef.current;
+      console.log(newScroll, oldScroll);
+      setScrollDirection(newScroll > oldScroll ? ScrollDirection.Down : ScrollDirection.Up);
+      setScrollPosition(newScroll);
+    }
+
+    document.body.addEventListener("scroll", scrollListener);
+
+    return () => {
+      document.body.removeEventListener("scroll", scrollListener);
+    };
+  }, [engine]);
+
+  useEffect(() => {
+    if (
+      scrollPosition < 100 &&
+      scrollDirection === ScrollDirection.Up &&
+      !bodiesAreHome &&
+      !isResettingBodies
+    ) {
+      resetBodyPositions();
+    } else {
+      doForce();
+    }
+  }, [scrollPosition]);
 
   return (
     <>
       <MatterContainer ref={scene}></MatterContainer>
+      <ScrollIndicator>{scrollDirection === ScrollDirection.Down ? "↓" : "↑"}</ScrollIndicator>
       <ButtonsContainer>
         <Button onClick={doForce}>force</Button>
         <Button onClick={resetBodyPositions}>Return</Button>
@@ -351,4 +407,11 @@ const ButtonsContainer = styled.div`
 
 const Button = styled.button`
   margin-left: 10px;
+`;
+
+const ScrollIndicator = styled.div`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 3em;
 `;
