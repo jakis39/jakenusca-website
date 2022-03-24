@@ -157,14 +157,11 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
 
     setInitialBodyPositions(null);
 
-    // console.log(bodies.length);
-
     // create engine
     var newEngine = Engine.create(),
       world = newEngine.world;
 
     newEngine.gravity.y = GRAVITY_Y;
-
     setEngine(newEngine);
 
     // create renderer
@@ -204,23 +201,22 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
       .forEach((body, index) => {
         newInitialBodyPositions.push({ ...body.position });
       });
-    console.log(newInitialBodyPositions);
     setInitialBodyPositions(newInitialBodyPositions);
 
     // add mouse control
-    var mouse = Mouse.create(render.canvas),
-      mouseConstraint = MouseConstraint.create(newEngine, {
-        mouse: mouse
-      });
-    mouse.pixelRatio = window.devicePixelRatio;
-    mouseConstraint.constraint.render.visible = false;
-    // mouseConstraint.constraint.stiffness = 0.2;
-    // mouseConstraint.constraint.damping = 0.3; // not sure whether this does much
+    // var mouse = Mouse.create(render.canvas),
+    //   mouseConstraint = MouseConstraint.create(newEngine, {
+    //     mouse: mouse
+    //   });
+    // mouse.pixelRatio = window.devicePixelRatio;
+    // mouseConstraint.constraint.render.visible = false;
+    // // mouseConstraint.constraint.stiffness = 0.2;
+    // // mouseConstraint.constraint.damping = 0.3; // not sure whether this does much
 
-    Composite.add(world, mouseConstraint);
+    // Composite.add(world, mouseConstraint);
 
-    // keep the mouse in sync with rendering
-    render.mouse = mouse;
+    // // keep the mouse in sync with rendering
+    // render.mouse = mouse;
 
     // fit the render viewport to the scene
     Render.lookAt(render, {
@@ -242,42 +238,25 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
     };
   }, [obstacles, bodies, width, height]);
 
-  // function forceMove(body, endX, endY, ticker) {
-  //   // dx is the total distance to move in the X direction
-  //   let dx = endX - body.position.x;
-
-  //   // dy is the total distance to move in the Y direction
-  //   let dy = endY - body.position.y;
-
-  //   // use dx & dy to calculate where the current [x,y] is at a given pct
-  //   let x = body.position.x + (dx * pct) / 100;
-  //   let y = body.position.y + (dy * pct) / 100;
-
-  //   Body.setPosition(body, {
-  //     x: x,
-  //     y: y
-  //   });
-  // }
-
-  function handleClick() {
-    console.log(Composite.allBodies(engine.world));
-
+  function resetBodyPositions() {
     const currentBodyPositions = [];
+    const currentBodyAngles = [];
     const letters = Composite.allBodies(engine.world).filter(body => body.label == LETTER_LABEL);
     letters.forEach((body, index) => {
+      // Freeze body and disable collisions
       Body.setStatic(body, true);
       body.collisionFilter.group = -1;
-      Body.setAngle(body, 0);
+      // Stop velocities
       Body.setAngularVelocity(body, 0);
       Body.setVelocity(body, { x: 0, y: 0 });
+      // Record current position and angle
       currentBodyPositions.push({ ...body.position });
-      //   console.log(body.position, initialBodyPositions[index]);
-      //   Body.setPosition(body, initialBodyPositions[index]);
-      //   Body.setStatic(body, false);
+      const reducedAngle = (body.angle % 2) * Math.PI;
+      currentBodyAngles.push(reducedAngle);
     });
 
     let ticker = 0;
-    const max_tick = 15; // higher number == slower time for letters to move
+    const maxTick = 50; // higher number == slower time for letters to move
 
     function easeOutQuart(time, beginVal, delta, duration) {
       return -delta * ((time = time / duration - 1) * time * time * time - 1) + beginVal;
@@ -286,32 +265,30 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
     function forceMove(body, endX, endY, ticker, index) {
       // dx is the total distance to move in the X direction
       let dx = endX - currentBodyPositions[index].x;
-
       // dy is the total distance to move in the Y direction
       let dy = endY - currentBodyPositions[index].y;
+      // da is the angle delta
+      let da = 0 - currentBodyAngles[index];
 
       // use dx & dy to calculate where the current [x,y] is at a given ticker
-      let x;
-      let y;
+      let x, y, angle;
 
-      if (ticker > max_tick - 1) {
+      if (ticker > maxTick - 1) {
         x = endX;
         y = endY;
+        angle = 0;
       } else {
-        // x = currentBodyPositions[index].x + (dx * ticker) / max_tick;
-        // y = currentBodyPositions[index].y + (dy * ticker) / max_tick;
-        x = easeOutQuart(ticker, currentBodyPositions[index].x, dx, max_tick);
-        y = easeOutQuart(ticker, currentBodyPositions[index].y, dy, max_tick);
+        x = easeOutQuart(ticker, currentBodyPositions[index].x, dx, maxTick);
+        y = easeOutQuart(ticker, currentBodyPositions[index].y, dy, maxTick);
+        angle = easeOutQuart(ticker, currentBodyAngles[index], da, maxTick);
       }
 
-      Body.setPosition(body, {
-        x: x,
-        y: y
-      });
+      Body.setPosition(body, { x: x, y: y });
+      Body.setAngle(body, angle);
     }
 
     function beforeUpdateCallback(event) {
-      if (ticker < max_tick + 1) {
+      if (ticker < maxTick + 1) {
         ticker = ticker + 1;
         letters.forEach((letter, index) => {
           const position = initialBodyPositions[index];
@@ -329,11 +306,27 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
     Events.on(engine, "beforeUpdate", beforeUpdateCallback);
   }
 
+  function doForce(test?: any) {
+    const asdf = test ?? engine;
+    if (!asdf || !asdf.world) {
+      return;
+    }
+    const letters = Composite.allBodies(engine.world).filter(body => body.label == LETTER_LABEL);
+    letters.forEach((body, index) => {
+      Body.applyForce(
+        body,
+        { x: body.position.x + 100, y: body.position.y + 20 },
+        { x: 0, y: -0.001 }
+      );
+    });
+  }
+
   return (
     <>
       <MatterContainer ref={scene}></MatterContainer>
       <ButtonsContainer>
-        <Button onClick={handleClick}>Return</Button>
+        <Button onClick={doForce}>force</Button>
+        <Button onClick={resetBodyPositions}>Return</Button>
       </ButtonsContainer>
     </>
   );
@@ -347,6 +340,7 @@ const MatterContainer = styled.div`
   width: 100%;
   top: 0;
   left: 0;
+  pointer-events: none;
 `;
 
 const ButtonsContainer = styled.div`

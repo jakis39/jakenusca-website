@@ -71,8 +71,6 @@ const IndexPage = props => {
   const [parked, setParked] = React.useState(false);
   // const { isSmall } = useWindowDimensions();
 
-  console.log(data);
-
   if (errors) {
     return (
       <Layout>
@@ -87,8 +85,6 @@ const IndexPage = props => {
     : // .filter(filterOutDocsWithoutSlugs)
       // .filter(filterOutDocsPublishedInTheFuture)
       [];
-
-  console.log(jobs);
 
   if (!site) {
     throw new Error(
@@ -105,18 +101,9 @@ const IndexPage = props => {
       <SEO title={site.title} description={site.description} keywords={site.keywords} />
       <IndexContainer grow>
         <BouncingLetters />
-        {/* <Name>
-          <FloatingText
-            parked
-            // parked={parked}
-            // stackWords={isSmall}
-          >
-            Jake Nusca
-          </FloatingText>
-        </Name> */}
-
-        {/* <AboutSection content={site.description} />
-        <WorkSection jobs={jobs} /> */}
+        <TopSection></TopSection>
+        <AboutSection content={site.description} />
+        <WorkSection jobs={jobs} />
       </IndexContainer>
     </Layout>
   );
@@ -129,9 +116,6 @@ const IndexContainer = styled(Container)`
   flex-direction: column;
 `;
 
-const Name = styled.span`
-  font-family: "Bungee Shade";
-  font-size: 80px;
-  color: #6874e8;
-  margin-bottom: 36px;
+const TopSection = styled.div`
+  height: 100vh;
 `;

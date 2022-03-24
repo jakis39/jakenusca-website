@@ -11,7 +11,6 @@ export interface JobBlockProps {
 
 export const JobBlock = (props: JobBlockProps) => {
   const { job } = props;
-  console.log(job);
   return (
     <JobWrapper>
       {job.companyLogo && (
