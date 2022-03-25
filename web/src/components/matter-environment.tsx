@@ -37,6 +37,8 @@ enum ScrollDirection {
 const LETTER_LABEL = "FloatingLetter";
 const SHAPE_BOUNCINESS = 0.9;
 const GRAVITY_Y = 0;
+const BODY_FRICTION = 0.0006;
+const BODY_FRICTION_AIR = 0.00006;
 
 export interface MatterEnvironmentProps {
   obstacles?: Array<HTMLElement>;
@@ -133,6 +135,8 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
     const letter = Bodies.rectangle(x, y, shapeWidth, shapeHeight, {
       restitution: SHAPE_BOUNCINESS,
       chamfer: { radius: 15 },
+      friction: BODY_FRICTION,
+      frictionAir: BODY_FRICTION_AIR,
       render: {
         fillStyle: "grey",
         strokeStyle: "#000000",
@@ -183,18 +187,18 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
 
     // Determine vertical positioning to center words
     const lineSpacing = shapeSize / 6;
-    const letterSpacing = shapeSize / 20;
     const yOffset = Math.round(
       containerHeight / 2 - (shapeSize / 2) * numLines - lineSpacing * (numLines - 1)
     );
 
     // Determine x offset to center words in screen
+    const letterSpacing = shapeSize / 20;
     const widestWidth = Math.round(
-      longestArray.reduce((partialSum, letter) => {
+      longestArray.reduce((partialSum, letter, index) => {
         const spriteRatio = letter.sprite.width / letter.sprite.height;
         const shapeHeight = shapeSize,
           shapeWidth = shapeSize * spriteRatio;
-        return partialSum + shapeWidth;
+        return partialSum + shapeWidth + (index == longestArray.length ? 0 : letterSpacing);
       }, 0)
     );
     const xOffset = containerWidth / 2 - widestWidth / 2;
@@ -431,11 +435,11 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
   return (
     <>
       <MatterContainer ref={scene}></MatterContainer>
-      <ScrollIndicator>{scrollDirection === ScrollDirection.Down ? "↓" : "↑"}</ScrollIndicator>
+      {/* <ScrollIndicator>{scrollDirection === ScrollDirection.Down ? "↓" : "↑"}</ScrollIndicator>
       <ButtonsContainer>
         <Button onClick={applyForceOnBodies}>force</Button>
         <Button onClick={resetBodyPositions}>Return</Button>
-      </ButtonsContainer>
+      </ButtonsContainer> */}
     </>
   );
 };
