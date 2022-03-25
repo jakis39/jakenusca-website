@@ -1,5 +1,5 @@
 import React from "react";
-import { buildImageObj } from "../lib/helpers";
+import { buildImageObj } from "../lib/gatsby-helpers";
 import { imageUrlFor } from "../lib/image-url";
 import BlockContent from "./block-content";
 import styled from "styled-components";
@@ -11,7 +11,6 @@ export interface JobBlockProps {
 
 export const JobBlock = (props: JobBlockProps) => {
   const { job } = props;
-  console.log(job);
   return (
     <JobWrapper>
       {job.companyLogo && (
@@ -49,6 +48,7 @@ const LogoContainer = styled.div`
   border-radius: 50%;
   overflow: hidden;
   border: 5px solid white;
+  flex-shrink: 0;
 
   & img {
     width: 100%;

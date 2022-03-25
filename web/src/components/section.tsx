@@ -10,18 +10,23 @@ export interface SectionProps {
 
 export const Section = ({ title, children }: SectionProps) => {
   return (
-    <section>
+    <SectionContainer as="section">
       {title && <Title>{title}</Title>}
-      <RoundedBox>{children}</RoundedBox>
-    </section>
+      {children}
+    </SectionContainer>
   );
 };
+
+const SectionContainer = styled(RoundedBox)`
+  margin-top: 3em;
+`;
 
 const Title = styled.h2`
   ${font("title24caps")}
   color: var(--color-title-text);
   text-transform: uppercase;
-  padding: 36px 24px 8px;
+  padding: 0px 24px 8px;
+  margin-top: 0;
 
   &::before {
     content: "➜";

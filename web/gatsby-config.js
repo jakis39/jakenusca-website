@@ -22,6 +22,18 @@ module.exports = {
         watchMode: !isProd,
         overlayDrafts: !isProd && token
       }
+    },
+    {
+      resolve: `gatsby-plugin-manifest`,
+      options: {
+        name: `Jake Nusca`,
+        short_name: `Jake Nusca`,
+        start_url: `/`,
+        background_color: `#90FFA7`,
+        theme_color: `#6874e8`,
+        display: `standalone`,
+        icon: `src/assets/images/icon.png`
+      }
     }
   ]
 };
