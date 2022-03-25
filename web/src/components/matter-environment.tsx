@@ -38,7 +38,7 @@ const GRAVITY_Y = 0;
 
 export interface MatterEnvironmentProps {
   obstacles?: Array<HTMLElement>;
-  bodies?: Array<BouncingSpriteRect>;
+  bodies?: Array<BouncingSpriteRect> | Array<Array<BouncingSpriteRect>>;
 }
 
 const MatterEnvironment = (props: MatterEnvironmentProps) => {
@@ -141,35 +141,61 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
     return letter;
   }
 
-  function addBodyStack(
-    world,
-    columns,
-    rows,
-    bodies: BouncingSpriteRect[],
-    shapeSize,
+  function addBodyStacks(
+    world: World,
+    bodies: BouncingSpriteRect[] | BouncingSpriteRect[][],
     containerWidth,
     containerHeight
   ) {
-    var stack = Composites.stack(
-      // containerWidth - (2 * shapeSize + containerWidth * 0.1),
-      20,
-      containerHeight / 2 - shapeSize / 2,
-      columns,
-      rows,
-      5,
-      20,
-      function(x, y, column, row, lastBody, i) {
-        return createSpriteRectangle(x, y, bodies[i].sprite, shapeSize);
-      }
+    const bodiesArrays = Array.isArray(bodies[0]) ? bodies : [bodies];
+    const numLines = bodiesArrays.length;
+
+    // Determine shape size
+    const arrayLengths = bodiesArrays.map(a => a.length);
+    const longestArrayLength = Math.max(...arrayLengths);
+    const longestArray = bodiesArrays[
+      arrayLengths.indexOf(longestArrayLength)
+    ] as BouncingSpriteRect[];
+    const shapeSize = containerWidth / (longestArrayLength + 2);
+
+    // Determine vertical positioning to center words
+    const lineSpacing = shapeSize / 6;
+    const letterSpacing = shapeSize / 20;
+    const yOffset = Math.round(
+      containerHeight / 2 - (shapeSize / 2) * numLines - lineSpacing * (numLines - 1)
     );
 
-    Composite.add(world, stack);
+    // Determine x offset to center words in screen
+    const widestWidth = Math.round(
+      longestArray.reduce((partialSum, letter) => {
+        const spriteRatio = letter.sprite.width / letter.sprite.height;
+        const shapeHeight = shapeSize,
+          shapeWidth = shapeSize * spriteRatio;
+        return partialSum + shapeWidth;
+      }, 0)
+    );
+    const xOffset = containerWidth / 2 - widestWidth / 2;
+
+    bodiesArrays.forEach((array, index) => {
+      var stack = Composites.stack(
+        // containerWidth - (2 * shapeSize + containerWidth * 0.1),
+        xOffset,
+        yOffset + (shapeSize + lineSpacing) * index,
+        array.length,
+        1,
+        letterSpacing,
+        lineSpacing,
+        function(x, y, column, row, lastBody, i) {
+          return createSpriteRectangle(x, y, array[i].sprite, shapeSize);
+        }
+      );
+      Composite.add(world, stack);
+    });
   }
 
   useEffect(() => {
     const containerWidth = scene.current ? scene.current.clientWidth : document.body.clientWidth;
     const containerHeight = scene.current ? scene.current.clientHeight : document.body.clientHeight;
-    const shapeSize = containerWidth / 10;
 
     setInitialBodyPositions(null);
 
@@ -207,7 +233,7 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
 
     // Add bodies
     if (bodies && bodies.length) {
-      addBodyStack(world, bodies.length, 1, bodies, shapeSize, containerWidth, containerHeight);
+      addBodyStacks(world, bodies, containerWidth, containerHeight);
     }
 
     // Mark original positions of bodies on screen;
@@ -258,7 +284,6 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
     if (isResettingBodies) {
       return;
     }
-    console.log("begin reset");
     setIsResettingBodies(true);
     const currentBodyPositions = [];
     const currentBodyAngles = [];
@@ -321,7 +346,6 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
           Body.setStatic(body, false);
         });
         Events.off(engine, "beforeUpdate", beforeUpdateCallback);
-        console.log("end reset");
         setIsResettingBodies(false);
         setBodiesAreHome(true);
       }
@@ -351,7 +375,6 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
     function scrollListener(e) {
       const newScroll = document.body.scrollTop;
       const oldScroll = scrollPositionRef.current;
-      console.log(newScroll, oldScroll);
       setScrollDirection(newScroll > oldScroll ? ScrollDirection.Down : ScrollDirection.Up);
       setScrollPosition(newScroll);
     }

@@ -23,12 +23,6 @@ const LetterPaths = {
   " ": LetterSpace
 };
 
-export interface BouncingLettersProps {
-  obstacles?: Array<HTMLElement>;
-}
-
-const name = "Jake Nusca";
-
 const loadLetterImage = (letter, path) => {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -55,14 +49,21 @@ interface LetterSize {
   width: number;
 }
 
+export interface BouncingLettersProps {
+  obstacles?: Array<HTMLElement>;
+  splitWords?: boolean;
+}
+
+const name = "Jake Nusca";
+const SHOULD_SPLIT_NAMES = true;
+
 const BouncingLetters = (props: BouncingLettersProps) => {
-  const { obstacles } = props;
+  const { obstacles, splitWords = SHOULD_SPLIT_NAMES } = props;
   const [bodies, setBodies] = useState([]);
   const [letterSizeMap, setLetterSizeMap] = useState<{ [key: string]: LetterSize }>(null);
 
   function getLetterSizes() {
     const promises = [];
-
     for (let i = 0; i < name.length; i++) {
       const letter = name[i].toLowerCase();
 
@@ -87,21 +88,26 @@ const BouncingLetters = (props: BouncingLettersProps) => {
   function populateBodies() {
     setBodies([]);
 
-    const newBodies = [];
-    for (let i = 0; i < name.length; i++) {
-      const letter = name[i].toLowerCase();
+    const splitNames = splitWords ? name.split(" ") : [name];
 
-      if (LetterPaths[letter]) {
-        newBodies.push({
-          label: letter,
-          sprite: {
-            path: LetterPaths[letter],
-            height: letterSizeMap[letter].height,
-            width: letterSizeMap[letter].width
-          }
-        });
+    const newBodies = splitNames.map(n => {
+      const letters = [];
+      for (let i = 0; i < n.length; i++) {
+        const letter = n[i].toLowerCase();
+
+        if (LetterPaths[letter]) {
+          letters.push({
+            label: letter,
+            sprite: {
+              path: LetterPaths[letter],
+              height: letterSizeMap[letter].height,
+              width: letterSizeMap[letter].width
+            }
+          });
+        }
       }
-    }
+      return letters;
+    });
     setBodies(newBodies);
   }
 
