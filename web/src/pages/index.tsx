@@ -4,7 +4,7 @@ import {
   mapEdgesToNodes,
   filterOutDocsWithoutSlugs,
   filterOutDocsPublishedInTheFuture
-} from "../lib/helpers";
+} from "../lib/gatsby-helpers";
 import Container from "../components/container";
 import GraphQLErrorList from "../components/graphql-error-list";
 import SEO from "../components/seo";

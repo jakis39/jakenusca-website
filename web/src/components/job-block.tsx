@@ -1,5 +1,5 @@
 import React from "react";
-import { buildImageObj } from "../lib/helpers";
+import { buildImageObj } from "../lib/gatsby-helpers";
 import { imageUrlFor } from "../lib/image-url";
 import BlockContent from "./block-content";
 import styled from "styled-components";

@@ -15,6 +15,8 @@ import {
   MouseConstraint
 } from "matter-js";
 import useWindowDimensions from "../hooks/useWindowDimensions";
+import { easeInOutCubic } from "../lib/timing-functions";
+import { isMobileBrowser } from "../lib/helpers";
 
 export interface Sprite {
   path: any;
@@ -44,13 +46,17 @@ export interface MatterEnvironmentProps {
 const MatterEnvironment = (props: MatterEnvironmentProps) => {
   const { obstacles, bodies } = props;
   const { width, height } = useWindowDimensions({
-    debounce: true
+    debounce: true,
+    // mobile browser address bar shenanigans cause a redraw of whole environment,
+    //  so ignore height changes on mobile devices
+    ignoreHeight: isMobileBrowser()
   });
   const scene = useRef(null);
   const [engine, setEngine] = useState<Engine>(null);
   const [initialBodyPositions, setInitialBodyPositions] = useState(null);
   const [isResettingBodies, setIsResettingBodies] = useState(false);
   const [bodiesAreHome, setBodiesAreHome] = useState(true);
+  const [shapeScale, setShapeScale] = useState(null);
 
   const [scrollPosition, _setScrollPosition] = useState(0);
   const scrollPositionRef = useRef(scrollPosition);
@@ -141,13 +147,25 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
     return letter;
   }
 
+  function determineAppropriateShapeSize(
+    longestArrayLength: number,
+    containerWidth: number,
+    containerHeight: number
+  ) {
+    const shapeSize = Math.min(containerWidth / (longestArrayLength + 1), containerHeight / 5);
+    console.log("shapeSize", shapeSize);
+    return shapeSize;
+  }
+
   function addBodyStacks(
     world: World,
     bodies: BouncingSpriteRect[] | BouncingSpriteRect[][],
     containerWidth,
     containerHeight
   ) {
-    const bodiesArrays = Array.isArray(bodies[0]) ? bodies : [bodies];
+    const bodiesArrays = Array.isArray(bodies[0])
+      ? (bodies as BouncingSpriteRect[][])
+      : [bodies as BouncingSpriteRect[]];
     const numLines = bodiesArrays.length;
 
     // Determine shape size
@@ -156,7 +174,12 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
     const longestArray = bodiesArrays[
       arrayLengths.indexOf(longestArrayLength)
     ] as BouncingSpriteRect[];
-    const shapeSize = containerWidth / (longestArrayLength + 2);
+    const shapeSize = determineAppropriateShapeSize(
+      longestArrayLength,
+      containerWidth,
+      containerHeight
+    );
+    setShapeScale(shapeSize);
 
     // Determine vertical positioning to center words
     const lineSpacing = shapeSize / 6;
@@ -193,6 +216,27 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
     });
   }
 
+  function addMouseControl(render: Render, eng: Engine, world: World) {
+    const mouse = Mouse.create(render.canvas);
+
+    // doesn't work
+    // mouse.element.removeEventListener("mousewheel", mouse.mousewheel);
+    // mouse.element.removeEventListener("DOMMouseScroll", mouse.mousewheel);
+
+    const mouseConstraint = MouseConstraint.create(eng, {
+      mouse: mouse
+    });
+    mouse.pixelRatio = window.devicePixelRatio;
+    mouseConstraint.constraint.render.visible = false;
+    // mouseConstraint.constraint.stiffness = 0.2;
+    // mouseConstraint.constraint.damping = 0.3; // not sure whether this does much
+
+    Composite.add(world, mouseConstraint);
+
+    // keep the mouse in sync with rendering
+    render.mouse = mouse;
+  }
+
   useEffect(() => {
     const containerWidth = scene.current ? scene.current.clientWidth : document.body.clientWidth;
     const containerHeight = scene.current ? scene.current.clientHeight : document.body.clientHeight;
@@ -213,7 +257,6 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
       options: {
         width: containerWidth,
         height: containerHeight,
-        // showAngleIndicator: true,
         background: "transparent",
         wireframes: false,
         pixelRatio: window?.devicePixelRatio
@@ -240,25 +283,13 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
     const newInitialBodyPositions = [];
     Composite.allBodies(newEngine.world)
       .filter(body => body.label == LETTER_LABEL)
-      .forEach((body, index) => {
+      .forEach(body => {
         newInitialBodyPositions.push({ ...body.position });
       });
     setInitialBodyPositions(newInitialBodyPositions);
 
     // add mouse control
-    // var mouse = Mouse.create(render.canvas),
-    //   mouseConstraint = MouseConstraint.create(newEngine, {
-    //     mouse: mouse
-    //   });
-    // mouse.pixelRatio = window.devicePixelRatio;
-    // mouseConstraint.constraint.render.visible = false;
-    // // mouseConstraint.constraint.stiffness = 0.2;
-    // // mouseConstraint.constraint.damping = 0.3; // not sure whether this does much
-
-    // Composite.add(world, mouseConstraint);
-
-    // // keep the mouse in sync with rendering
-    // render.mouse = mouse;
+    // addMouseControl(render, newEngine, world);
 
     // fit the render viewport to the scene
     Render.lookAt(render, {
@@ -297,18 +328,20 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
       Body.setVelocity(body, { x: 0, y: 0 });
       // Record current position and angle
       currentBodyPositions.push({ ...body.position });
-      const reducedAngle = (body.angle % 2) * Math.PI;
+      const reducedAngle = body.angle % (2 * Math.PI);
       currentBodyAngles.push(reducedAngle);
     });
 
     let ticker = 0;
     const maxTick = 30; // higher number == slower time for letters to move
 
-    function easeOutQuart(time, beginVal, delta, duration) {
-      return -delta * ((time = time / duration - 1) * time * time * time - 1) + beginVal;
+    function timingFunction(time, beginVal, delta, duration) {
+      return easeInOutCubic(time, beginVal, delta, duration);
     }
 
     function forceMove(body, endX, endY, ticker, index) {
+      // source: https://github.com/liabru/matter-js/issues/733
+
       // dx is the total distance to move in the X direction
       let dx = endX - currentBodyPositions[index].x;
       // dy is the total distance to move in the Y direction
@@ -324,9 +357,9 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
         y = endY;
         angle = 0;
       } else {
-        x = easeOutQuart(ticker, currentBodyPositions[index].x, dx, maxTick);
-        y = easeOutQuart(ticker, currentBodyPositions[index].y, dy, maxTick);
-        angle = easeOutQuart(ticker, currentBodyAngles[index], da, maxTick);
+        x = timingFunction(ticker, currentBodyPositions[index].x, dx, maxTick);
+        y = timingFunction(ticker, currentBodyPositions[index].y, dy, maxTick);
+        angle = timingFunction(ticker, currentBodyAngles[index], da, maxTick);
       }
 
       Body.setPosition(body, { x: x, y: y });
@@ -354,25 +387,21 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
     Events.on(engine, "beforeUpdate", beforeUpdateCallback);
   }
 
-  function doForce() {
+  function applyForceOnBodies() {
     if (!engine || !engine.world) {
       return;
     }
     const letters = Composite.allBodies(engine.world).filter(body => body.label == LETTER_LABEL);
     const forceDirection = scrollDirection === ScrollDirection.Down ? -1 : 1;
-    const force = 0.001 * forceDirection;
-    letters.forEach((body, index) => {
-      Body.applyForce(
-        body,
-        { x: body.position.x + 100, y: body.position.y + 20 },
-        { x: 0, y: force }
-      );
+    const force = 0.00001 * shapeScale * forceDirection;
+    letters.forEach(body => {
+      Body.applyForce(body, { x: body.position.x + 0.2 * shapeScale, y: 0 }, { x: 0, y: force });
     });
     setBodiesAreHome(false);
   }
 
   useEffect(() => {
-    function scrollListener(e) {
+    function scrollListener() {
       const newScroll = document.body.scrollTop;
       const oldScroll = scrollPositionRef.current;
       setScrollDirection(newScroll > oldScroll ? ScrollDirection.Down : ScrollDirection.Up);
@@ -395,7 +424,7 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
     ) {
       resetBodyPositions();
     } else {
-      doForce();
+      applyForceOnBodies();
     }
   }, [scrollPosition]);
 
@@ -404,7 +433,7 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
       <MatterContainer ref={scene}></MatterContainer>
       <ScrollIndicator>{scrollDirection === ScrollDirection.Down ? "↓" : "↑"}</ScrollIndicator>
       <ButtonsContainer>
-        <Button onClick={doForce}>force</Button>
+        <Button onClick={applyForceOnBodies}>force</Button>
         <Button onClick={resetBodyPositions}>Return</Button>
       </ButtonsContainer>
     </>

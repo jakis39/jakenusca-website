@@ -35,10 +35,11 @@ function getWindowDimensions() {
 export interface useWindowDimensionsProps {
   debounce?: boolean;
   debounceTime?: number;
+  ignoreHeight?: boolean;
 }
 
 export default function useWindowDimensions(props: useWindowDimensionsProps = {}) {
-  const { debounce: shouldDebounce, debounceTime: userDebounceTime } = props;
+  const { debounce: shouldDebounce, debounceTime: userDebounceTime, ignoreHeight = false } = props;
   const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
   const debounceTime = userDebounceTime ?? DEBOUNCE_TIME;
 
@@ -62,5 +63,10 @@ export default function useWindowDimensions(props: useWindowDimensionsProps = {}
       window.removeEventListener("resize", debouncedResize ? debouncedResize : handleResize);
   }, []);
 
-  return windowDimensions;
+  return ignoreHeight
+    ? {
+        ...windowDimensions,
+        height: 0
+      }
+    : windowDimensions;
 }
