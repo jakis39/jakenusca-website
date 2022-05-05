@@ -12,20 +12,16 @@ export interface AboutSectionProps {
 
 export const AboutSection = (props: AboutSectionProps) => {
   return (
-    <>
-      {/* <Section> */}
-      <AboutWrapper>
-        <RoundedBox>
-          <Content>{props.content}</Content>
-        </RoundedBox>
-        <ReallyRoundedBox>
-          <ImageContainer>
-            <img src={jake} alt="jake" />
-          </ImageContainer>
-        </ReallyRoundedBox>
-      </AboutWrapper>
-      {/* </Section> */}
-    </>
+    <AboutWrapper>
+      <RoundedBox>
+        <Content>{props.content}</Content>
+      </RoundedBox>
+      <ReallyRoundedBox>
+        <ImageContainer>
+          <img src={jake} alt="jake" />
+        </ImageContainer>
+      </ReallyRoundedBox>
+    </AboutWrapper>
   );
 };
 

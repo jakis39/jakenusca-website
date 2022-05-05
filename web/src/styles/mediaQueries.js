@@ -1,11 +1,20 @@
+export const DeviceBreakpoints = {
+  minSmall: 450,
+  maxSmall: 449,
+  minMedium: 675,
+  maxMedium: 674,
+  minLarge: 900,
+  maxLarge: 899
+};
+
 export const DeviceWidth = {
-  mediaMinSmall: 'min-width: 450px',
-  mediaMaxSmall: 'max-width: 449px',
-  mediaMinMedium: 'min-width: 675px',
-  mediaMaxMedium: 'max-width: 674px',
-  mediaMedium: '(min-width: 450px) and (max-width: 674px)',
-  mediaMinLarge: 'min-width: 900px',
-  mediaMaxLarge: 'max-width: 899px',
+  mediaMinSmall: `min-width: ${DeviceBreakpoints.minSmall}px`,
+  mediaMaxSmall: `max-width: ${DeviceBreakpoints.maxSmall}px`,
+  mediaMinMedium: `min-width: ${DeviceBreakpoints.minMedium}px`,
+  mediaMaxMedium: `max-width: ${DeviceBreakpoints.maxMedium}px`,
+  mediaMedium: `(min-width: ${DeviceBreakpoints.minSmall}px) and (max-width: ${DeviceBreakpoints.maxMedium}px)`,
+  mediaMinLarge: `min-width: ${DeviceBreakpoints.minLarge}px`,
+  mediaMaxLarge: `max-width: ${DeviceBreakpoints.maxLarge}px`
 };
 
 // TODO add brackets to all of these and change usages throughout app

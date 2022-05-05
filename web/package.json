@@ -1,8 +1,8 @@
 {
   "private": true,
-  "name": "sanity-gatsby-portfolio-web",
+  "name": "jakenusca-website-web",
   "version": "1.0.3",
-  "author": "Sanity <hello@sanity.io>",
+  "author": "Jake Nusca",
   "scripts": {
     "build": "gatsby build",
     "clean-cache": "gatsby clean",

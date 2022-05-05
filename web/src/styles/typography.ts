@@ -16,7 +16,7 @@ const Typography = {
     lineHeight: "var(--font-title80-line-height)"
   },
   title24caps: {
-    fontFamily: "var(--font-family-sans)",
+    fontFamily: "var(--font-family-subtitle)",
     fontSize: "var(--font-title24-size)",
     lineHeight: "var(--font-title24-line-height)",
     fontWeight: "700",

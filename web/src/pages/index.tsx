@@ -1,21 +1,20 @@
 import React from "react";
+import styled from "styled-components";
 import { graphql } from "gatsby";
 import {
   mapEdgesToNodes,
   filterOutDocsWithoutSlugs,
   filterOutDocsPublishedInTheFuture
 } from "../lib/gatsby-helpers";
-import Container from "../components/container";
 import GraphQLErrorList from "../components/graphql-error-list";
 import SEO from "../components/seo";
 import Layout from "../containers/layout";
-import { FloatingText } from "../components/floating-text";
 
-import useWindowDimensions from "../hooks/useWindowDimensions";
+import Container from "../components/container";
+import BouncingLetters from "../components/bouncing-letters";
 import { AboutSection } from "../components/sections/about-section";
 import { WorkSection } from "../components/sections/work-section";
-import styled from "styled-components";
-import BouncingLetters from "../components/bouncing-letters";
+import { ContactSection } from "../components/sections/contact-section";
 
 export const query = graphql`
   query IndexPageQuery {
@@ -60,6 +59,34 @@ export const query = graphql`
             }
             alt
           }
+          notableProjects {
+            title
+            clientName
+            url
+            _rawBody
+            logo {
+              crop {
+                _key
+                _type
+                top
+                bottom
+                left
+                right
+              }
+              hotspot {
+                _key
+                _type
+                x
+                y
+                height
+                width
+              }
+              asset {
+                _id
+              }
+              alt
+            }
+          }
         }
       }
     }
@@ -92,10 +119,6 @@ const IndexPage = props => {
     );
   }
 
-  function toggleText() {
-    setParked(!parked);
-  }
-
   return (
     <Layout>
       <SEO title={site.title} description={site.description} keywords={site.keywords} />
@@ -104,6 +127,7 @@ const IndexPage = props => {
         <TopSection></TopSection>
         <AboutSection content={site.description} />
         <WorkSection jobs={jobs} />
+        <ContactSection />
       </IndexContainer>
     </Layout>
   );

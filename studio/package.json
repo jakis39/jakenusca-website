@@ -1,9 +1,9 @@
 {
   "private": true,
-  "name": "sanity-gatsby-portfolio-studio",
+  "name": "jakenusca-website-studio",
   "version": "1.0.6",
   "main": "package.json",
-  "author": "Sanity <hello@sanity.io>",
+  "author": "Jake Nusca",
   "scripts": {
     "dev": "sanity start",
     "format": "prettier-eslint --write \"**/*.js\" \"!node_modules/**\"",
@@ -22,7 +22,6 @@
     "@sanity/default-login": "^2.22.0",
     "@sanity/desk-tool": "^2.22.2",
     "@sanity/structure": "^2.22.0",
-    "@sanity/studio-hints": "^2.21.10",
     "date-fns": "^2.27.0",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
