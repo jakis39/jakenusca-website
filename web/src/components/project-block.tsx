@@ -29,7 +29,7 @@ export const ProjectBlock = (props: ProjectBlockProps) => {
       <Content>
         <JobDescription>
           <HeaderContainer>
-            <JobTitle>{project.title ?? ""}</JobTitle>
+            <JobTitle href={project.url}>{project.title ?? ""}</JobTitle>
             <DetailsBox>
               <CompanyName>{project.clientName ?? ""}</CompanyName>
             </DetailsBox>
@@ -103,8 +103,16 @@ const HeaderContainer = styled.div`
   }
 `;
 
-const JobTitle = styled.div`
+const JobTitle = styled.a`
   ${font("title24")}
+  text-decoration: none;
+  color: var(--color-body-text);
+
+  &:hover,
+  &:active {
+    color: var(--color-active-link-text);
+    text-shadow: 1px 1px var(--color-active-link-shadow-text);
+  }
 `;
 
 const DetailsBox = styled.div`
