@@ -3,6 +3,7 @@ import { css } from "styled-components";
 interface TypeStyle {
   fontFamily?: string;
   fontSize?: string;
+  fontStyle?: string;
   lineHeight?: string;
   fontWeight?: string;
   textTransform?: string;
@@ -20,26 +21,37 @@ const Typography = {
     fontSize: "var(--font-title24-size)",
     lineHeight: "var(--font-title24-line-height)",
     fontWeight: "700",
-    textTransform: "uppercase"
+    textTransform: "uppercase",
+    fontStyle: "italic"
   },
   title24: {
-    fontFamily: "var(--font-family-sans)",
+    fontFamily: "var(--font-family-mono)",
     fontSize: "var(--font-title24-size)",
     lineHeight: "var(--font-title24-line-height)",
-    fontWeight: "500"
+    fontWeight: "500",
+    fontStyle: "italic"
   },
   title16: {
-    fontFamily: "var(--font-family-sans)",
+    fontFamily: "var(--font-family-mono)",
     fontSize: "var(--font-title16-size)",
     lineHeight: "var(--font-title16-line-height)",
     fontWeight: "600",
     textTransform: "uppercase"
+    // fontStyle: "italic"
   },
   body16: {
     fontFamily: "var(--font-family-sans)",
     fontSize: "var(--font-body16-size)",
     lineHeight: "var(--font-body16-line-height)",
     fontWeight: "normal"
+  },
+  interface16: {
+    fontFamily: "var(--font-family-mono)",
+    fontSize: "var(--font-body16-size)",
+    lineHeight: "var(--font-body16-line-height)",
+    fontWeight: "bold",
+    fontStyle: "italic",
+    textTransform: "uppercase"
   },
   // interface18: {
   //   fontFamily: "var(--font-family-sans)",
@@ -94,7 +106,13 @@ const Typography = {
   }
 };
 
-export type FontStyle = "title80" | "title24caps" | "title24" | "title16" | "body16";
+export type FontStyle =
+  | "title80"
+  | "title24caps"
+  | "title24"
+  | "title16"
+  | "body16"
+  | "interface16";
 
 export const font = (type: FontStyle) => {
   const typeStyle = Typography[type] as TypeStyle;
@@ -106,6 +124,7 @@ export const font = (type: FontStyle) => {
   return css`
     font-family: ${typeStyle.fontFamily ?? undefined};
     font-size: ${typeStyle.fontSize ?? undefined};
+    font-style: ${typeStyle.fontStyle ?? undefined};
     line-height: ${typeStyle.lineHeight ?? undefined};
     font-weight: ${typeStyle.fontWeight ?? undefined};
     text-transform: ${typeStyle.textTransform ?? undefined};

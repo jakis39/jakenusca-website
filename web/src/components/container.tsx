@@ -6,7 +6,7 @@ export interface ContainerProps {
 
 const Container = styled.div<ContainerProps>`
   box-sizing: border-box;
-  max-width: 960px;
+  max-width: 850px;
   padding: 1.5em;
   margin: 0 auto;
 

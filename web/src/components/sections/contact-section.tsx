@@ -1,8 +1,9 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { RoundedBox } from "../rounded-box";
 import { Section } from "../section";
+import { DeviceWidth } from "../../styles/mediaQueries";
 
 import download from "../../assets/images/social-icons/download.png";
 import email from "../../assets/images/social-icons/mail.png";
@@ -12,6 +13,7 @@ import soundcloud from "../../assets/images/social-icons/soundcloud.png";
 import instagram from "../../assets/images/social-icons/instagram.png";
 
 import resume from "../../assets/Jake Nusca Resume.pdf";
+import { font } from "../../styles/typography";
 
 interface ContactLink {
   label: string;
@@ -50,9 +52,42 @@ const CONTACT_LINKS: ContactLink[] = [
 
 export const ContactSection = () => {
   return (
-    <Section title="Get at me">
+    <Section title="Contact me">
       <ContactWrapper>
-        <ContactBubble>
+        <ListSection>
+          <ContactLink href={resume} index={0}>
+            <ResumeImgBubble>
+              <img src={download} alt="Resume" />
+            </ResumeImgBubble>
+            Download my resume
+          </ContactLink>
+          {CONTACT_LINKS.map(
+            (link, index) =>
+              index < 2 && (
+                <ContactLink key={link.label} href={link.link} index={index + 1}>
+                  <ImgBubble>
+                    <img src={link.icon} alt={link.label} />
+                  </ImgBubble>
+                  {link.label}
+                </ContactLink>
+              )
+          )}
+        </ListSection>
+        <ListSection>
+          {CONTACT_LINKS.map(
+            (link, index) =>
+              index >= 2 && (
+                <ContactLink key={link.label} href={link.link} index={index}>
+                  <ImgBubble>
+                    <img src={link.icon} alt={link.label} />
+                  </ImgBubble>
+                  {link.label}
+                </ContactLink>
+              )
+          )}
+        </ListSection>
+
+        {/* <ContactBubble>
           <ResumeLink href={resume} target="_blank" rel="noopener noreferrer">
             <div>
               <span>Resume</span>
@@ -66,17 +101,74 @@ export const ContactSection = () => {
               <img src={link.icon} alt={link.label} />
             </ImgLink>
           </ContactBubble>
-        ))}
+        ))} */}
       </ContactWrapper>
     </Section>
   );
 };
 
-const ContactWrapper = styled.section`
+const ContactWrapper = styled.div`
   display: flex;
-  align-items: flex-start;
-  justify-content: space-around;
+  flex-wrap: wrap;
   padding-bottom: 1em;
+  justify-content: center;
+`;
+
+const ListSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  /* flex-basis: 49%; */
+  align-items: flex-start;
+
+  @media (${DeviceWidth.mediaMaxMedium}) {
+    flex-basis: 100%;
+  }
+`;
+
+const ContactLink = styled.a<{ index?: number }>`
+  ${font("interface16")}
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--color-body-text);
+  margin-bottom: 1em;
+
+  &:hover,
+  &:active {
+    color: var(--color-active-link-text);
+    text-shadow: 1px 1px var(--color-active-link-shadow-text);
+  }
+
+  ${({ index }) => css`
+    @media (${DeviceWidth.mediaMinMedium}) {
+      margin-left: ${index * 2}em;
+    }
+  `}
+`;
+
+const ImgBubble = styled.div`
+  flex-shrink: 0;
+  border: 3px solid white;
+  border-radius: 50%;
+  overflow: hidden;
+  height: 2.5em;
+  width: 2.5em;
+  margin-right: 1em;
+
+  img {
+    height: 100%;
+  }
+`;
+
+const ResumeImgBubble = styled(ImgBubble)`
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    height: 70%;
+  }
 `;
 
 const ContactBubble = styled.div`

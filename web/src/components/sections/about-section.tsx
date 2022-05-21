@@ -2,8 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import { Section } from "../section";
 
-import jake from "../../assets/images/jake.jpg";
+import jake from "../../assets/images/jake2.jpg";
 import { RoundedBox } from "../rounded-box";
+import { DeviceWidth } from "../../styles/mediaQueries";
 // https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/SNice.svg/1200px-SNice.svg.png
 
 export interface AboutSectionProps {
@@ -13,29 +14,42 @@ export interface AboutSectionProps {
 export const AboutSection = (props: AboutSectionProps) => {
   return (
     <AboutWrapper>
-      <RoundedBox>
-        <Content>{props.content}</Content>
-      </RoundedBox>
       <ReallyRoundedBox>
         <ImageContainer>
           <img src={jake} alt="jake" />
         </ImageContainer>
       </ReallyRoundedBox>
+      <ContentBox>
+        <Content>{props.content}</Content>
+      </ContentBox>
     </AboutWrapper>
   );
 };
 
 const AboutWrapper = styled.section`
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
+`;
+
+const ContentBox = styled(RoundedBox)`
+  width: 66%;
+  margin-top: -26%;
+
+  @media (${DeviceWidth.mediaMaxSmall}) {
+    width: 100%;
+    margin-top: 10%;
+  }
 `;
 
 const ReallyRoundedBox = styled(RoundedBox)`
-  flex-basis: 50%;
   flex-shrink: 0;
   border-radius: 50%;
-  width: 50%;
-  margin-left: 1em;
+  width: 60%;
+  align-self: flex-end;
+
+  @media (${DeviceWidth.mediaMaxSmall}) {
+    width: 100%;
+  }
 `;
 
 const ImageContainer = styled.div`
@@ -45,7 +59,6 @@ const ImageContainer = styled.div`
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
-  margin-right: 24px;
 
   & img {
     height: 100%;

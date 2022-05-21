@@ -2,6 +2,9 @@ import { createGlobalStyle } from "styled-components";
 // import { theme } from "./theme";
 
 const GlobalStyle = createGlobalStyle`
+* {
+  box-sizing: border-box;
+}
 html {
   font-family: var(--font-family-sans);
   font-size: var(--font-base-size);

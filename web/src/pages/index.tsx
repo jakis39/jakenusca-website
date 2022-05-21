@@ -126,8 +126,8 @@ const IndexPage = props => {
         <BouncingLetters />
         <TopSection></TopSection>
         <AboutSection content={site.description} />
-        <WorkSection jobs={jobs} />
         <ContactSection />
+        <WorkSection jobs={jobs} />
       </IndexContainer>
     </Layout>
   );

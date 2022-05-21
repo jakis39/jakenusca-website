@@ -28,10 +28,12 @@ export const ProjectBlock = (props: ProjectBlockProps) => {
 
       <Content>
         <JobDescription>
-          <JobTitle>{project.title ?? ""}</JobTitle>
-          <DetailsBox>
-            <CompanyName>{project.clientName ?? ""}</CompanyName>
-          </DetailsBox>
+          <HeaderContainer>
+            <JobTitle>{project.title ?? ""}</JobTitle>
+            <DetailsBox>
+              <CompanyName>{project.clientName ?? ""}</CompanyName>
+            </DetailsBox>
+          </HeaderContainer>
           {project._rawBody && <BlockContent blocks={project._rawBody || []} />}
         </JobDescription>
       </Content>
@@ -42,6 +44,7 @@ export const ProjectBlock = (props: ProjectBlockProps) => {
 const JobWrapper = styled.div`
   margin-bottom: 24px;
   display: flex;
+  position: relative;
 `;
 
 const LogoContainer = styled.a`
@@ -51,15 +54,23 @@ const LogoContainer = styled.a`
   align-items: center;
   width: min(15vw, 100px);
   height: min(15vw, 100px);
-  margin-right: 24px;
+  margin-right: 1rem;
   border-radius: 50%;
   overflow: hidden;
   border: 2px solid white;
   background: white;
 
   & img {
-    width: 94%;
+    width: 90%;
     object-fit: contain;
+  }
+
+  @media (${DeviceWidth.mediaMaxSmall}) {
+    position: absolute;
+    top: 1rem;
+    height: 4rem;
+    width: 4rem;
+    border: 2px solid var(--color-title-text);
   }
 `;
 
@@ -74,12 +85,22 @@ const Content = styled.div`
       white-space: pre-wrap;
     }
   }
+
+  @media (${DeviceWidth.mediaMaxSmall}) {
+    margin-left: 2rem;
+  }
 `;
 
 const JobDescription = styled.div`
   padding: 16px 24px;
   background-color: var(--color-box-background);
   border-radius: 25px;
+`;
+
+const HeaderContainer = styled.div`
+  @media (${DeviceWidth.mediaMaxSmall}) {
+    margin-left: 1.5rem;
+  }
 `;
 
 const JobTitle = styled.div`
@@ -96,6 +117,7 @@ const DetailsBox = styled.div`
 
   @media (${DeviceWidth.mediaMaxMedium}) {
     flex-direction: column;
+    align-items: flex-start;
   }
 `;
 
