@@ -1,0 +1,43 @@
+@import url("https://fonts.googleapis.com/css2?family=Bungee+Shade");
+@import url("https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+
+:root {
+  --font-family-title: "Bungee Shade", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-family-subtitle: "Space Mono", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-family-sans: "Work Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-family-mono: "Space Mono", -apple-system, BlinkMacSystemFont, monospace;
+
+  --unit: 16;
+  --font-base-size: 1em; /* 16px */
+  --font-base-line-height: calc(24 / var(--unit)); /* 24px */
+
+  --font-title80-size: calc(80 / var(--unit) * 1rem); /* 80px */
+  --font-title80-line-height: 1;
+
+  --font-title24-size: calc(24 / var(--unit) * 1rem); /* 24px */
+  --font-title24-line-height: calc(32 / 24);
+
+  --font-title16-size: calc(16 / var(--unit) * 1rem); /* 16px */
+  --font-title16-line-height: calc(32 / 16);
+
+  --font-body16-size: calc(16 / var(--unit) * 1rem); /* 16px */
+  --font-body16-line-height: calc(16 / 16);
+}
+
+/* @media (${DeviceWidth.mediaMaxSmall}) { */
+@media (max-width: 449px) {
+  :root {
+    --font-title24-size: calc(22 / var(--unit) * 1rem); /* 22px */
+    --font-title24-line-height: calc(32 / 22);
+
+    --font-title16-size: calc(14 / var(--unit) * 1rem); /* 14px */
+    --font-title16-line-height: calc(32 / 14);
+  }
+}
+
+html {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-base-size);
+  line-height: var(--font-base-line-height);
+}

@@ -1,0 +1,14 @@
+@import "../../styles/custom-media.css";
+
+.wrapper {
+  display: inline-block;
+
+  @nest & > span {
+    display: inline-block;
+  }
+}
+
+.stackWords {
+  display: flex;
+  flex-direction: column;
+}

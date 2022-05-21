@@ -1,0 +1,18 @@
+:root {
+  /* Base colours */
+  --base-color-accent: #6874e8;
+  --base-color-gradient-1: #a8ff78;
+  --base-color-gradient-2: #78ffd6;
+  --base-color-white: #ffffff;
+  --base-color-black: #202123;
+  --base-color-transparent-white: rgba(255, 255, 255, 0.3);
+  --base-color-mostly-white: rgba(255, 255, 255, 0.9);
+
+  /* Theme colours */
+  --color-body-text: var(--base-color-black);
+  --color-title-text: var(--base-color-accent);
+  --color-active-link-text: var(--base-color-white);
+  --color-active-link-shadow-text: var(--base-color-accent);
+  --color-box-overlay: var(--base-color-transparent-white);
+  --color-box-background: var(--base-color-mostly-white);
+}
