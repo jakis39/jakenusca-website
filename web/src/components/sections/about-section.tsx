@@ -29,6 +29,7 @@ export const AboutSection = (props: AboutSectionProps) => {
 const AboutWrapper = styled.section`
   display: flex;
   flex-direction: column;
+  margin-bottom: 2em;
 `;
 
 const ContentBox = styled(RoundedBox)`
