@@ -24,7 +24,7 @@ interface ContactLink {
 
 const CONTACT_LINKS: ContactLink[] = [
   {
-    label: "email",
+    label: "Email me",
     icon: email,
     link: "mailto:hello@jakenusca.com"
   },
