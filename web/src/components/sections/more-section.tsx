@@ -68,6 +68,7 @@ const AssetGrid = styled.div`
     aspect-ratio: 1;
     position: relative;
     overflow: hidden;
+    border-radius: 3px;
 
     div {
       position: absolute;
