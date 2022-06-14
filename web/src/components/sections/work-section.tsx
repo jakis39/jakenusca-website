@@ -1,14 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 
-import { Section } from "../section";
+import Section from "../section";
 import { ProjectBlock } from "../project-block";
 
 export interface WorkSectionProps {
   jobs?: any;
 }
 
-export const WorkSection = (props: WorkSectionProps) => {
+const WorkSection = (props: WorkSectionProps, ref) => {
   const { jobs } = props;
   let projects = [];
   jobs.forEach(job => {
@@ -18,15 +18,17 @@ export const WorkSection = (props: WorkSectionProps) => {
   });
 
   return (
-    <Section title="Notable Freelance Work">
+    <Section title="Notable Freelance Work" ref={ref}>
       <WorkWrapper>
         {projects.map(project => (
-          <ProjectBlock key={project.clienName + project.title} project={project} />
+          <ProjectBlock key={project.clientName + project.title} project={project} />
         ))}
       </WorkWrapper>
     </Section>
   );
 };
+
+export default React.forwardRef(WorkSection);
 
 const WorkWrapper = styled.div`
   display: flex;

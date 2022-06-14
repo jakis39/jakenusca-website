@@ -8,14 +8,16 @@ export interface SectionProps {
   children?: any;
 }
 
-export const Section = ({ title, children }: SectionProps) => {
+const Section = ({ title, children }: SectionProps, ref) => {
   return (
-    <SectionContainer as="section">
+    <SectionContainer as="section" ref={ref}>
       {title && <Title>{title}</Title>}
       {children}
     </SectionContainer>
   );
 };
+
+export default React.forwardRef(Section);
 
 const SectionContainer = styled(RoundedBox)`
   margin-bottom: 2em;
