@@ -9,10 +9,10 @@ import { isMobileBrowser } from "../../lib/helpers";
 import { Section } from "../section";
 
 import vid1 from "../../assets/website-pics/PXL_20211205_051445416.TS.mp4";
-import vid2 from "../../assets/website-pics/waterfall-jump.mp4";
+// import vid2 from "../../assets/website-pics/waterfall-jump.mp4";
 import vid3 from "../../assets/website-pics/PXL_20220428_145209171.LS.mp4";
 
-const GRID_VIDS = [vid1, vid2, vid3];
+const GRID_VIDS = [vid1, vid3];
 
 export interface MoreSectionProps {
   images?: any;
@@ -57,11 +57,11 @@ export const MoreSection = (props: MoreSectionProps) => {
 
 const AssetGrid = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 0.5em;
 
   @media (${DeviceWidth.mediaMaxSmall}) {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
   }
 
   > div {
@@ -90,21 +90,22 @@ const VideoGridContainer = styled.div`
   /* yuck */
   @media (${DeviceWidth.mediaMinSmall}) {
     :nth-child(2) {
-      grid-column-start: 2;
+      grid-column-start: 3;
       grid-row-start: 2;
     }
-    :nth-child(3) {
+    /* :nth-child(3) {
       grid-column-start: 1;
       grid-row-start: 3;
-    }
+    } */
   }
 
   @media (${DeviceWidth.mediaMaxSmall}) {
     :nth-child(2) {
       grid-row-start: 3;
+      grid-column-start: 2;
     }
-    :nth-child(3) {
+    /* :nth-child(3) {
       grid-row-start: 5;
-    }
+    } */
   }
 `;
