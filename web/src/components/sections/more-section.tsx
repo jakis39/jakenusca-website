@@ -42,7 +42,8 @@ export const MoreSection = (props: MoreSectionProps) => {
             <div>
               <img
                 src={imageUrlFor(buildImageObj(image))
-                  .width(screenWidth * (isMobileBrowser() ? 2 : 1))
+                  // .width(screenWidth * (isMobileBrowser() ? 2 : 1)) // TODO: broken due to screenwidth sometimes being 0
+                  .width(1000)
                   .url()}
                 alt={image.alt}
               />
