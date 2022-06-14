@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
-import { Section } from "../section";
+import { DeviceWidth } from "../../styles/mediaQueries";
+
+import { RoundedBox } from "../rounded-box";
+
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+gsap.registerPlugin(ScrollTrigger);
 
 import jake from "../../assets/images/jake2.jpg";
-import { RoundedBox } from "../rounded-box";
-import { DeviceWidth } from "../../styles/mediaQueries";
+import { isMobileBrowser } from "../../lib/helpers";
 // https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/SNice.svg/1200px-SNice.svg.png
 
 export interface AboutSectionProps {
@@ -12,14 +17,69 @@ export interface AboutSectionProps {
 }
 
 export const AboutSection = (props: AboutSectionProps) => {
+  const imageRef = useRef();
+  const boxRef = useRef();
+
+  useEffect(() => {
+    if (isMobileBrowser()) {
+      gsap.fromTo(
+        boxRef.current,
+        {
+          marginTop: 40
+        },
+        {
+          marginTop: -150,
+          scrollTrigger: {
+            id: `aboutBox`,
+            trigger: imageRef.current,
+            start: "top 40%",
+            scrub: true
+          }
+        }
+      );
+    } else {
+      gsap.fromTo(
+        boxRef.current,
+        {
+          marginTop: 300
+        },
+        {
+          marginTop: -300,
+          scrollTrigger: {
+            id: `aboutBox`,
+            trigger: imageRef.current,
+            start: "top bottom",
+            scrub: true
+          }
+        }
+      );
+
+      gsap.fromTo(
+        imageRef.current,
+        {
+          translateX: -100
+        },
+        {
+          translateX: 0,
+          scrollTrigger: {
+            id: `aboutBox`,
+            trigger: imageRef.current,
+            start: "top bottom",
+            scrub: true
+          }
+        }
+      );
+    }
+  }, [boxRef, imageRef]);
+
   return (
     <AboutWrapper>
-      <ReallyRoundedBox>
+      <ReallyRoundedBox ref={imageRef}>
         <ImageContainer>
           <img src={jake} alt="jake" />
         </ImageContainer>
       </ReallyRoundedBox>
-      <ContentBox>
+      <ContentBox ref={boxRef}>
         <Content>{props.content}</Content>
       </ContentBox>
     </AboutWrapper>
@@ -34,11 +94,11 @@ const AboutWrapper = styled.section`
 
 const ContentBox = styled(RoundedBox)`
   width: 66%;
-  margin-top: -26%;
+  /* margin-top: -26%; */
 
   @media (${DeviceWidth.mediaMaxSmall}) {
     width: 100%;
-    margin-top: 10%;
+    /* margin-top: 10%; */
   }
 `;
 
