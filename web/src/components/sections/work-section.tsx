@@ -40,7 +40,7 @@ const WorkWrapper = styled.div`
   & .content {
     padding: 16px 24px;
     background-color: white;
-    border-radius: 25px;
+    border-radius: var(--white-box-border-radius);
     margin-top: 24px;
   }
 `;

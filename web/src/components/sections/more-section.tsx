@@ -59,6 +59,7 @@ const AssetGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 0.5em;
+  margin-bottom: 1.5em;
 
   @media (${DeviceWidth.mediaMaxSmall}) {
     grid-template-columns: 1fr 1fr;
@@ -68,6 +69,7 @@ const AssetGrid = styled.div`
     aspect-ratio: 1;
     position: relative;
     overflow: hidden;
+    border-radius: 3px;
 
     div {
       position: absolute;

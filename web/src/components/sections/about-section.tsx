@@ -134,6 +134,6 @@ const ImageContainer = styled.div`
 const Content = styled.div`
   padding: 16px 24px;
   background-color: white;
-  border-radius: 25px;
+  border-radius: var(--white-box-border-radius);
   white-space: pre-wrap;
 `;
