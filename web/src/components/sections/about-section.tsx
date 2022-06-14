@@ -16,35 +16,35 @@ export interface AboutSectionProps {
   content?: string;
 }
 
-export const AboutSection = (props: AboutSectionProps) => {
+const AboutSection = (props: AboutSectionProps) => {
   const imageRef = useRef();
   const boxRef = useRef();
 
   useEffect(() => {
     if (isMobileBrowser()) {
-      gsap.fromTo(
-        boxRef.current,
-        {
-          marginTop: 40
-        },
-        {
-          marginTop: -150,
-          scrollTrigger: {
-            id: `aboutBox`,
-            trigger: imageRef.current,
-            start: "top 40%",
-            scrub: true
-          }
-        }
-      );
+      // gsap.fromTo(
+      //   boxRef.current,
+      //   {
+      //     marginTop: 40
+      //   },
+      //   {
+      //     marginTop: -150,
+      //     scrollTrigger: {
+      //       id: `aboutBox`,
+      //       trigger: imageRef.current,
+      //       start: "top 40%",
+      //       scrub: true
+      //     }
+      //   }
+      // );
     } else {
       gsap.fromTo(
         boxRef.current,
         {
-          marginTop: 300
+          translateY: 300
         },
         {
-          marginTop: -300,
+          translateY: 0,
           scrollTrigger: {
             id: `aboutBox`,
             trigger: imageRef.current,
@@ -86,6 +86,8 @@ export const AboutSection = (props: AboutSectionProps) => {
   );
 };
 
+export default AboutSection;
+
 const AboutWrapper = styled.section`
   display: flex;
   flex-direction: column;
@@ -94,11 +96,13 @@ const AboutWrapper = styled.section`
 
 const ContentBox = styled(RoundedBox)`
   width: 66%;
-  /* margin-top: -26%; */
+  margin-top: -35%;
+  margin-bottom: 2em;
 
   @media (${DeviceWidth.mediaMaxSmall}) {
     width: 100%;
-    /* margin-top: 10%; */
+    margin-top: -16%;
+    margin-bottom: 0%;
   }
 `;
 

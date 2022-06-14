@@ -6,7 +6,7 @@ import { DeviceWidth } from "../../styles/mediaQueries";
 import useWindowDimensions from "../../hooks/useWindowDimensions";
 import { isMobileBrowser } from "../../lib/helpers";
 
-import { Section } from "../section";
+import Section from "../section";
 
 import vid1 from "../../assets/website-pics/PXL_20211205_051445416.TS.mp4";
 // import vid2 from "../../assets/website-pics/waterfall-jump.mp4";
@@ -18,7 +18,7 @@ export interface MoreSectionProps {
   images?: any;
 }
 
-export const MoreSection = (props: MoreSectionProps) => {
+const MoreSection = (props: MoreSectionProps, ref) => {
   const { images } = props;
   const { width: screenWidth } = useWindowDimensions({
     debounce: true,
@@ -28,12 +28,21 @@ export const MoreSection = (props: MoreSectionProps) => {
   });
 
   return (
-    <Section title="Get to know me ">
+    <Section title="Get to know me" ref={ref}>
       <AssetGrid>
         {GRID_VIDS.map((vid, i) => (
           <VideoGridContainer key={"vid" + i}>
             <div>
-              <video width="100%" src={vid} playsInline autoPlay muted loop />
+              <video
+                width="100%"
+                src={vid}
+                playsInline
+                autoPlay
+                muted
+                loop
+                disableRemotePlayback
+                disablePictureInPicture
+              />
             </div>
           </VideoGridContainer>
         ))}
@@ -54,6 +63,8 @@ export const MoreSection = (props: MoreSectionProps) => {
     </Section>
   );
 };
+
+export default React.forwardRef(MoreSection);
 
 const AssetGrid = styled.div`
   display: grid;

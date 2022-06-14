@@ -1,21 +1,22 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { graphql } from "gatsby";
-import {
-  mapEdgesToNodes,
-  filterOutDocsWithoutSlugs,
-  filterOutDocsPublishedInTheFuture
-} from "../lib/gatsby-helpers";
+import { mapEdgesToNodes } from "../lib/gatsby-helpers";
 import GraphQLErrorList from "../components/graphql-error-list";
 import SEO from "../components/seo";
 import Layout from "../containers/layout";
 
 import Container from "../components/container";
 import BouncingLetters from "../components/bouncing-letters";
-import { AboutSection } from "../components/sections/about-section";
-import { WorkSection } from "../components/sections/work-section";
-import { ContactSection } from "../components/sections/contact-section";
-import { MoreSection } from "../components/sections/more-section";
+import AboutSection from "../components/sections/about-section";
+import WorkSection from "../components/sections/work-section";
+import ContactSection from "../components/sections/contact-section";
+import MoreSection from "../components/sections/more-section";
+
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { isMobileBrowser } from "../lib/helpers";
+gsap.registerPlugin(ScrollTrigger);
 
 export const query = graphql`
   query IndexPageQuery {
@@ -143,6 +144,40 @@ const IndexPage = props => {
     );
   }
 
+  const sectionRefs = useRef([]);
+
+  const addSectionRef = element => {
+    if (element && !sectionRefs.current.includes(element)) {
+      sectionRefs.current.push(element);
+    }
+  };
+
+  useEffect(() => {
+    if (!isMobileBrowser()) {
+      sectionRefs.current.forEach((ref, index) => {
+        gsap.fromTo(
+          ref,
+          {
+            autoAlpha: 0,
+            translateY: 40
+          },
+          {
+            autoAlpha: 1,
+            translateY: 0,
+            duration: 0.5,
+            // delay: (index + 1) % 3 === 0 ? 0.4 : 0.2,
+            scrollTrigger: {
+              id: `section-${index + 1}`,
+              trigger: ref,
+              start: "top center+=100",
+              toggleActions: "play"
+            }
+          }
+        );
+      });
+    }
+  }, [sectionRefs]);
+
   return (
     <Layout>
       <SEO title={site.title} description={site.description} keywords={site.keywords} />
@@ -150,9 +185,9 @@ const IndexPage = props => {
         <BouncingLetters />
         <TopSection></TopSection>
         <AboutSection content={site.description} />
-        <ContactSection />
-        <WorkSection jobs={jobs} />
-        <MoreSection images={images} />
+        <ContactSection ref={addSectionRef} />
+        <WorkSection jobs={jobs} ref={addSectionRef} />
+        <MoreSection images={images} ref={addSectionRef} />
       </IndexContainer>
     </Layout>
   );
