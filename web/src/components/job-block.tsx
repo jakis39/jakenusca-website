@@ -110,7 +110,7 @@ const Content = styled.div`
 const JobDescription = styled.div`
   padding: 16px 24px;
   background-color: var(--color-box-background);
-  border-radius: 25px;
+  border-radius: var(--white-box-border-radius);
 `;
 
 const JobTitle = styled.div`
@@ -142,7 +142,7 @@ const ProjectsList = styled.div`
   /* flex-grow: 1; */
   padding: 16px 24px;
   background-color: var(--color-box-background);
-  border-radius: 25px;
+  border-radius: var(--white-box-border-radius);
 `;
 
 const ProjectBlock = styled.div`

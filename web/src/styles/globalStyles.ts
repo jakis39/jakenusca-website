@@ -2,6 +2,10 @@ import { createGlobalStyle } from "styled-components";
 // import { theme } from "./theme";
 
 const GlobalStyle = createGlobalStyle`
+:root {
+  --white-box-border-radius: 20px;
+}
+  
 * {
   box-sizing: border-box;
 }
