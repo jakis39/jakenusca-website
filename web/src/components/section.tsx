@@ -18,7 +18,7 @@ export const Section = ({ title, children }: SectionProps) => {
 };
 
 const SectionContainer = styled(RoundedBox)`
-  margin-top: 3em;
+  margin-bottom: 2em;
 `;
 
 const Title = styled.h2`

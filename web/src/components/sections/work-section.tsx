@@ -1,9 +1,8 @@
-import { Link } from "gatsby";
 import React from "react";
-import { ProjectBlock } from "../project-block";
+import styled from "styled-components";
 
 import { Section } from "../section";
-import styled from "styled-components";
+import { ProjectBlock } from "../project-block";
 
 export interface WorkSectionProps {
   jobs?: any;
@@ -18,16 +17,12 @@ export const WorkSection = (props: WorkSectionProps) => {
     }
   });
 
-  console.log(projects);
   return (
     <Section title="Notable Freelance Work">
       <WorkWrapper>
         {projects.map(project => (
-          <ProjectBlock key={project.id} project={project} />
+          <ProjectBlock key={project.clienName + project.title} project={project} />
         ))}
-        {/* {jobs.map((job: any) => (
-          <JobBlock key={job.id} job={job} />
-        ))} */}
       </WorkWrapper>
     </Section>
   );
@@ -45,7 +40,7 @@ const WorkWrapper = styled.div`
   & .content {
     padding: 16px 24px;
     background-color: white;
-    border-radius: 25px;
+    border-radius: var(--white-box-border-radius);
     margin-top: 24px;
   }
 `;

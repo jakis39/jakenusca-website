@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "sanity start",
     "format": "prettier-eslint --write \"**/*.js\" \"!node_modules/**\"",
-    "build": "sanity build",
+    "build": "lerna bootstrap && sanity build",
     "graphql-deploy": "sanity graphql deploy --playground",
     "lint": "eslint .",
     "test": "sanity check"

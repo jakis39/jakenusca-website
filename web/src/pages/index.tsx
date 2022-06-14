@@ -15,6 +15,7 @@ import BouncingLetters from "../components/bouncing-letters";
 import { AboutSection } from "../components/sections/about-section";
 import { WorkSection } from "../components/sections/work-section";
 import { ContactSection } from "../components/sections/contact-section";
+import { MoreSection } from "../components/sections/more-section";
 
 export const query = graphql`
   query IndexPageQuery {
@@ -22,6 +23,30 @@ export const query = graphql`
       title
       description
       keywords
+      images {
+        _key
+        crop {
+          _key
+          _type
+          top
+          bottom
+          left
+          right
+        }
+        hotspot {
+          _key
+          _type
+          x
+          y
+          height
+          width
+        }
+        asset {
+          _id
+        }
+        caption
+        alt
+      }
     }
     jobs: allSanityJob(
       limit: 100
@@ -95,8 +120,6 @@ export const query = graphql`
 
 const IndexPage = props => {
   const { data, errors } = props;
-  const [parked, setParked] = React.useState(false);
-  // const { isSmall } = useWindowDimensions();
 
   if (errors) {
     return (
@@ -112,6 +135,7 @@ const IndexPage = props => {
     : // .filter(filterOutDocsWithoutSlugs)
       // .filter(filterOutDocsPublishedInTheFuture)
       [];
+  const images = site?.images;
 
   if (!site) {
     throw new Error(
@@ -128,6 +152,7 @@ const IndexPage = props => {
         <AboutSection content={site.description} />
         <ContactSection />
         <WorkSection jobs={jobs} />
+        <MoreSection images={images} />
       </IndexContainer>
     </Layout>
   );

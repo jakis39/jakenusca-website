@@ -29,7 +29,7 @@ export const ProjectBlock = (props: ProjectBlockProps) => {
       <Content>
         <JobDescription>
           <HeaderContainer>
-            <JobTitle>{project.title ?? ""}</JobTitle>
+            <JobTitle href={project.url}>{project.title ?? ""}</JobTitle>
             <DetailsBox>
               <CompanyName>{project.clientName ?? ""}</CompanyName>
             </DetailsBox>
@@ -94,7 +94,7 @@ const Content = styled.div`
 const JobDescription = styled.div`
   padding: 16px 24px;
   background-color: var(--color-box-background);
-  border-radius: 25px;
+  border-radius: var(--white-box-border-radius);
 `;
 
 const HeaderContainer = styled.div`
@@ -103,8 +103,16 @@ const HeaderContainer = styled.div`
   }
 `;
 
-const JobTitle = styled.div`
+const JobTitle = styled.a`
   ${font("title24")}
+  text-decoration: none;
+  color: var(--color-body-text);
+
+  &:hover,
+  &:active {
+    color: var(--color-active-link-text);
+    text-shadow: 1px 1px var(--color-active-link-shadow-text);
+  }
 `;
 
 const DetailsBox = styled.div`

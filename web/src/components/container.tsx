@@ -10,10 +10,6 @@ const Container = styled.div<ContainerProps>`
   padding: 1.5em;
   margin: 0 auto;
 
-  @media (--media-min-small) {
-    padding: 2em;
-  }
-
   ${({ grow }) =>
     grow &&
     css`

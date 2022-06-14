@@ -157,7 +157,6 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
     containerHeight: number
   ) {
     const shapeSize = Math.min(containerWidth / (longestArrayLength + 1), containerHeight / 5);
-    console.log("shapeSize", shapeSize);
     return shapeSize;
   }
 
