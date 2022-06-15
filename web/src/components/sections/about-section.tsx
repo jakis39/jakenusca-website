@@ -73,7 +73,7 @@ const ImageContainer = styled.div`
 
 const Content = styled.div`
   padding: 16px 24px;
-  background-color: white;
+  background-color: var(--color-box-background);
   border-radius: var(--white-box-border-radius);
   white-space: pre-wrap;
 `;
