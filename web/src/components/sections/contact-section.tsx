@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import styled, { css } from "styled-components";
 import { DeviceWidth } from "../../styles/mediaQueries";
 import { font } from "../../styles/typography";
 
-import { Section } from "../section";
+import Section from "../section";
 
 import download from "../../assets/images/social-icons/download.png";
 import email from "../../assets/images/social-icons/mail.png";
@@ -12,6 +12,11 @@ import github from "../../assets/images/social-icons/github.png";
 import soundcloud from "../../assets/images/social-icons/soundcloud.png";
 import instagram from "../../assets/images/social-icons/instagram.png";
 import resume from "../../assets/Jake Nusca Resume.pdf";
+
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { isMobileBrowser } from "../../lib/helpers";
+gsap.registerPlugin(ScrollTrigger);
 
 interface ContactLink {
   label: string;
@@ -48,12 +53,47 @@ const CONTACT_LINKS: ContactLink[] = [
   }
 ];
 
-export const ContactSection = () => {
+const ContactSection = (props, ref) => {
+  const linkRefs = useRef([]);
+  const wrapperRef = useRef();
+
+  const addLinkRef = element => {
+    if (element && !linkRefs.current.includes(element)) {
+      linkRefs.current.push(element);
+    }
+  };
+
+  useEffect(() => {
+    if (!isMobileBrowser()) {
+      linkRefs.current.forEach((ref, index) => {
+        gsap.fromTo(
+          ref,
+          {
+            autoAlpha: 0,
+            translateY: 20
+          },
+          {
+            autoAlpha: 1,
+            translateY: 0,
+            duration: 0.5,
+            delay: 0.1 * index,
+            scrollTrigger: {
+              id: `section-${index + 1}`,
+              trigger: wrapperRef.current,
+              start: "top center+=100",
+              toggleActions: "play"
+            }
+          }
+        );
+      });
+    }
+  }, [linkRefs]);
+
   return (
-    <Section title="Contact me">
-      <ContactWrapper>
+    <Section ref={ref} title="Contact me">
+      <ContactWrapper ref={wrapperRef}>
         <ListSection>
-          <ContactLink href={resume} index={0}>
+          <ContactLink href={resume} index={0} ref={addLinkRef}>
             <ResumeImgBubble>
               <img src={download} alt="Resume" />
             </ResumeImgBubble>
@@ -62,7 +102,7 @@ export const ContactSection = () => {
           {CONTACT_LINKS.map(
             (link, index) =>
               index < 2 && (
-                <ContactLink key={link.label} href={link.link} index={index + 1}>
+                <ContactLink key={link.label} href={link.link} index={index + 1} ref={addLinkRef}>
                   <ImgBubble>
                     <img src={link.icon} alt={link.label} />
                   </ImgBubble>
@@ -75,7 +115,7 @@ export const ContactSection = () => {
           {CONTACT_LINKS.map(
             (link, index) =>
               index >= 2 && (
-                <ContactLink key={link.label} href={link.link} index={index}>
+                <ContactLink key={link.label} href={link.link} index={index} ref={addLinkRef}>
                   <ImgBubble>
                     <img src={link.icon} alt={link.label} />
                   </ImgBubble>
@@ -88,6 +128,8 @@ export const ContactSection = () => {
     </Section>
   );
 };
+
+export default React.forwardRef(ContactSection);
 
 const ContactWrapper = styled.div`
   display: flex;
