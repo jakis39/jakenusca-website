@@ -93,7 +93,13 @@ const ContactSection = (props, ref) => {
     <Section ref={ref} title="Contact me">
       <ContactWrapper ref={wrapperRef}>
         <ListSection>
-          <ContactLink href={resume} index={0} ref={addLinkRef}>
+          <ContactLink
+            href={resume}
+            index={0}
+            ref={addLinkRef}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
             <ResumeImgBubble>
               <img src={download} alt="Resume" />
             </ResumeImgBubble>
@@ -102,7 +108,14 @@ const ContactSection = (props, ref) => {
           {CONTACT_LINKS.map(
             (link, index) =>
               index < 2 && (
-                <ContactLink key={link.label} href={link.link} index={index + 1} ref={addLinkRef}>
+                <ContactLink
+                  key={link.label}
+                  href={link.link}
+                  index={index + 1}
+                  ref={addLinkRef}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
                   <ImgBubble>
                     <img src={link.icon} alt={link.label} />
                   </ImgBubble>
@@ -115,7 +128,14 @@ const ContactSection = (props, ref) => {
           {CONTACT_LINKS.map(
             (link, index) =>
               index >= 2 && (
-                <ContactLink key={link.label} href={link.link} index={index} ref={addLinkRef}>
+                <ContactLink // TODO: DRY this up !
+                  key={link.label}
+                  href={link.link}
+                  index={index}
+                  ref={addLinkRef}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
                   <ImgBubble>
                     <img src={link.icon} alt={link.label} />
                   </ImgBubble>
