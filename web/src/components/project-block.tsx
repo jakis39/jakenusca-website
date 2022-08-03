@@ -16,7 +16,7 @@ export const ProjectBlock = (props: ProjectBlockProps) => {
   return (
     <JobWrapper>
       {project.logo && (
-        <LogoContainer href={project.url}>
+        <LogoContainer href={project.url} target="_blank" rel="noreferrer noopener">
           <img
             src={imageUrlFor(buildImageObj(project.logo))
               .width(200)
@@ -29,7 +29,9 @@ export const ProjectBlock = (props: ProjectBlockProps) => {
       <Content>
         <JobDescription>
           <HeaderContainer>
-            <JobTitle href={project.url}>{project.title ?? ""}</JobTitle>
+            <JobTitle href={project.url} target="_blank" rel="noreferrer noopener">
+              {project.title ?? ""}
+            </JobTitle>
             <DetailsBox>
               <CompanyName>{project.clientName ?? ""}</CompanyName>
             </DetailsBox>
