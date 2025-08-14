@@ -8,7 +8,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
-import jake from "../../assets/images/jake2.jpg";
+import jake from "../../assets/images/jake3.jpg";
 import { isMobileBrowser } from "../../lib/helpers";
 // https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/SNice.svg/1200px-SNice.svg.png
 

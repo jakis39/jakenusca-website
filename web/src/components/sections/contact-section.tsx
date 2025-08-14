@@ -11,6 +11,7 @@ import linkedin from "../../assets/images/social-icons/linkedin.png";
 import github from "../../assets/images/social-icons/github.png";
 import soundcloud from "../../assets/images/social-icons/soundcloud.png";
 import instagram from "../../assets/images/social-icons/instagram.png";
+import youtube from "../../assets/images/social-icons/youtube.png";
 import resume from "../../assets/Jake Nusca Resume.pdf";
 
 import { gsap } from "gsap";
@@ -47,10 +48,15 @@ const CONTACT_LINKS: ContactLink[] = [
     link: "https://soundcloud.com/djpotsnpans"
   },
   {
-    label: "Instagram",
-    icon: instagram,
-    link: "https://www.instagram.com/stainesmd/"
+    label: "That's so stinky",
+    icon: youtube,
+    link: "https://www.youtube.com/watch?v=ynvrBroHd-g&list=PLTSGGnkds_orRhIuBz9FY2VelqatfLehv"
   }
+  // {
+  //   label: "Instagram",
+  //   icon: instagram,
+  //   link: "https://www.instagram.com/djpotsnpans/"
+  // }
 ];
 
 const ContactSection = (props, ref) => {
@@ -191,7 +197,7 @@ const ContactLink = styled.a<{ index?: number }>`
 
 const ImgBubble = styled.div`
   flex-shrink: 0;
-  border: 3px solid white;
+  border: 3px solid #ffffffaa;
   border-radius: 50%;
   overflow: hidden;
   height: 2.5em;

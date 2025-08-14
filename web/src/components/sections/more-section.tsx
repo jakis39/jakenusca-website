@@ -8,7 +8,7 @@ import { isMobileBrowser } from "../../lib/helpers";
 
 import Section from "../section";
 
-import vid1 from "../../assets/website-pics/PXL_20211205_051445416.TS.mp4";
+import vid1 from "../../assets/website-pics/20240113_023249.mp4";
 // import vid2 from "../../assets/website-pics/waterfall-jump.mp4";
 import vid3 from "../../assets/website-pics/PXL_20220428_145209171.LS.mp4";
 
