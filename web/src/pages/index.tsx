@@ -16,6 +16,7 @@ import MoreSection from "../components/sections/more-section";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { isMobileBrowser } from "../lib/helpers";
+import ScrollHint from "../components/ScrollHint";
 gsap.registerPlugin(ScrollTrigger);
 
 export const query = graphql`
@@ -182,7 +183,9 @@ const IndexPage = props => {
       <BGContainer />
       <IndexContainer grow>
         <BouncingLetters />
-        <TopSection></TopSection>
+        <TopSection>
+          <ScrollHint />
+        </TopSection>
         <AboutSection content={site.description} />
         <ContactSection ref={addSectionRef} />
         <WorkSection jobs={jobs} ref={addSectionRef} />
