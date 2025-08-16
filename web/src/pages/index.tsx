@@ -145,7 +145,6 @@ const IndexPage = props => {
   }
 
   const sectionRefs = useRef<any[]>([]);
-  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const addSectionRef = element => {
     if (element && !sectionRefs.current.includes(element)) {
@@ -181,10 +180,10 @@ const IndexPage = props => {
     <Layout>
       <SEO title={site.title} description={site.description} keywords={site.keywords} />
       <BGContainer />
-      <IndexContainer grow ref={containerRef}>
+      <IndexContainer grow>
         <BouncingLetters />
         <TopSection></TopSection>
-        <AboutSection content={site.description} containerRef={containerRef} />
+        <AboutSection content={site.description} />
         <ContactSection ref={addSectionRef} />
         <WorkSection jobs={jobs} ref={addSectionRef} />
         <MoreSection images={images} ref={addSectionRef} />
