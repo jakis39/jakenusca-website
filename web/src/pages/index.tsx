@@ -144,7 +144,8 @@ const IndexPage = props => {
     );
   }
 
-  const sectionRefs = useRef([]);
+  const sectionRefs = useRef<any[]>([]);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const addSectionRef = element => {
     if (element && !sectionRefs.current.includes(element)) {
@@ -153,38 +154,37 @@ const IndexPage = props => {
   };
 
   useEffect(() => {
-    if (!isMobileBrowser()) {
-      sectionRefs.current.forEach((ref, index) => {
-        gsap.fromTo(
-          ref,
-          {
-            autoAlpha: 0,
-            translateY: 40
-          },
-          {
-            autoAlpha: 1,
-            translateY: 0,
-            duration: 0.5,
-            // delay: (index + 1) % 3 === 0 ? 0.4 : 0.2,
-            scrollTrigger: {
-              id: `section-${index + 1}`,
-              trigger: ref,
-              start: "top center+=100",
-              toggleActions: "play"
-            }
+    sectionRefs.current.forEach((ref, index) => {
+      gsap.fromTo(
+        ref,
+        {
+          autoAlpha: 0,
+          translateY: 40
+        },
+        {
+          autoAlpha: 1,
+          translateY: 0,
+          duration: 0.5,
+          // delay: (index + 1) % 3 === 0 ? 0.4 : 0.2,
+          scrollTrigger: {
+            id: `section-${index + 1}`,
+            trigger: ref,
+            start: `top ${isMobileBrowser() ? "85%" : "center+=100"}`,
+            toggleActions: "play"
           }
-        );
-      });
-    }
+        }
+      );
+    });
   }, [sectionRefs]);
 
   return (
     <Layout>
       <SEO title={site.title} description={site.description} keywords={site.keywords} />
-      <IndexContainer grow>
+      <BGContainer />
+      <IndexContainer grow ref={containerRef}>
         <BouncingLetters />
         <TopSection></TopSection>
-        <AboutSection content={site.description} />
+        <AboutSection content={site.description} containerRef={containerRef} />
         <ContactSection ref={addSectionRef} />
         <WorkSection jobs={jobs} ref={addSectionRef} />
         <MoreSection images={images} ref={addSectionRef} />
@@ -195,11 +195,32 @@ const IndexPage = props => {
 
 export default IndexPage;
 
+const BGContainer = styled.div`
+  display: block;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -10;
+  background: linear-gradient(125deg, var(--base-color-gradient-1), var(--base-color-gradient-2));
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+`;
+
 const IndexContainer = styled(Container)`
   display: flex;
   flex-direction: column;
 `;
 
 const TopSection = styled.div`
-  height: 100vh;
+  height: calc(100vh - 3em);
+  margin-bottom: 1.5em;
+
+  display: flex;
+  align-items: end;
+  justify-content: center;
 `;

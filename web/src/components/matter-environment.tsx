@@ -405,16 +405,16 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
 
   useEffect(() => {
     function scrollListener() {
-      const newScroll = document.body.scrollTop;
+      const newScroll = window.pageYOffset;
       const oldScroll = scrollPositionRef.current;
       setScrollDirection(newScroll > oldScroll ? ScrollDirection.Down : ScrollDirection.Up);
       setScrollPosition(newScroll);
     }
 
-    document.body.addEventListener("scroll", scrollListener);
+    window.addEventListener("scroll", scrollListener);
 
     return () => {
-      document.body.removeEventListener("scroll", scrollListener);
+      window.removeEventListener("scroll", scrollListener);
     };
   }, [engine]);
 
@@ -446,7 +446,7 @@ const MatterEnvironment = (props: MatterEnvironmentProps) => {
 export default MatterEnvironment;
 
 const MatterContainer = styled.div`
-  position: absolute;
+  position: fixed;
   height: 100%;
   width: 100%;
   top: 0;

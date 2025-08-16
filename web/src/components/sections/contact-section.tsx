@@ -70,29 +70,27 @@ const ContactSection = (props, ref) => {
   };
 
   useEffect(() => {
-    if (!isMobileBrowser()) {
-      linkRefs.current.forEach((ref, index) => {
-        gsap.fromTo(
-          ref,
-          {
-            autoAlpha: 0,
-            translateY: 20
-          },
-          {
-            autoAlpha: 1,
-            translateY: 0,
-            duration: 0.5,
-            delay: 0.1 * index,
-            scrollTrigger: {
-              id: `section-${index + 1}`,
-              trigger: wrapperRef.current,
-              start: "top center+=100",
-              toggleActions: "play"
-            }
+    linkRefs.current.forEach((ref, index) => {
+      gsap.fromTo(
+        ref,
+        {
+          autoAlpha: 0,
+          translateY: 20
+        },
+        {
+          autoAlpha: 1,
+          translateY: 0,
+          duration: 0.5,
+          delay: 0.1 * index,
+          scrollTrigger: {
+            id: `section-${index + 1}`,
+            trigger: wrapperRef.current,
+            start: "top center+=100",
+            toggleActions: "play"
           }
-        );
-      });
-    }
+        }
+      );
+    });
   }, [linkRefs]);
 
   return (
@@ -190,7 +188,7 @@ const ContactLink = styled.a<{ index?: number }>`
 
   ${({ index }) => css`
     @media (${DeviceWidth.mediaMinMedium}) {
-      margin-left: ${index * 2}em;
+      margin-left: ${index ?? 0 * 2}em;
     }
   `}
 `;

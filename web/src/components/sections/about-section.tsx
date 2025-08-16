@@ -17,26 +17,30 @@ export interface AboutSectionProps {
 }
 
 const AboutSection = (props: AboutSectionProps) => {
-  const imageRef = useRef();
-  const boxRef = useRef();
+  const imageRef = useRef<HTMLDivElement | null>(null);
+  const boxRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    console.log("effect");
+    if (!boxRef.current || !imageRef.current) return;
+
     if (isMobileBrowser()) {
-      // gsap.fromTo(
-      //   boxRef.current,
-      //   {
-      //     marginTop: 40
-      //   },
-      //   {
-      //     marginTop: -150,
-      //     scrollTrigger: {
-      //       id: `aboutBox`,
-      //       trigger: imageRef.current,
-      //       start: "top 40%",
-      //       scrub: true
-      //     }
-      //   }
-      // );
+      gsap.fromTo(
+        boxRef.current,
+        {
+          y: 200
+        },
+        {
+          y: -100,
+          scrollTrigger: {
+            id: `aboutBox`,
+            trigger: imageRef.current,
+            start: "top 60%",
+            end: "top top",
+            scrub: true
+          }
+        }
+      );
     } else {
       gsap.fromTo(
         boxRef.current,
@@ -92,6 +96,10 @@ const AboutWrapper = styled.section`
   display: flex;
   flex-direction: column;
   margin-bottom: 2em;
+
+  @media (${DeviceWidth.mediaMaxSmall}) {
+    margin-bottom: calc(-100px + 2em);
+  }
 `;
 
 const ContentBox = styled(RoundedBox)`
