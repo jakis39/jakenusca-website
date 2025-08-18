@@ -453,20 +453,3 @@ const MatterContainer = styled.div`
   left: 0;
   pointer-events: none;
 `;
-
-const ButtonsContainer = styled.div`
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-`;
-
-const Button = styled.button`
-  margin-left: 10px;
-`;
-
-const ScrollIndicator = styled.div`
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 3em;
-`;

@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import MatterEnvironment, { BouncingSpriteRect } from "./matter-environment";
+import MatterEnvironment from "./matter-environment";
 
-import LetterJ from "../assets/images/letters/J.png";
-import LetterA from "../assets/images/letters/A.png";
-import LetterK from "../assets/images/letters/K.png";
-import LetterE from "../assets/images/letters/E.png";
-import LetterN from "../assets/images/letters/N.png";
-import LetterU from "../assets/images/letters/U.png";
-import LetterS from "../assets/images/letters/S.png";
-import LetterC from "../assets/images/letters/C.png";
-import LetterSpace from "../assets/images/letters/space.png";
+import LetterJ from "../assets/images/letters/J.svg";
+import LetterA from "../assets/images/letters/A.svg";
+import LetterK from "../assets/images/letters/K.svg";
+import LetterE from "../assets/images/letters/E.svg";
+import LetterN from "../assets/images/letters/N.svg";
+import LetterU from "../assets/images/letters/U.svg";
+import LetterS from "../assets/images/letters/S.svg";
+import LetterC from "../assets/images/letters/C.svg";
+import LetterSpace from "../assets/images/letters/space.svg";
 
 const LetterPaths = {
   j: LetterJ,

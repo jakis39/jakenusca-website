@@ -1,7 +1,19 @@
-import React, { useEffect } from "react";
+import React, { FC, useEffect } from "react";
 import styled, { keyframes } from "styled-components/macro";
 
 const caretColor = "#6874e8";
+
+const AnimatedCaret: FC<{ delay: string }> = ({ delay }) => (
+  <Caret delay={delay} viewBox="0 0 36 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M9 10l9 6 9-6"
+      stroke={caretColor}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Caret>
+);
 
 const fadeCaret = keyframes`
   0% { opacity: 0; }
@@ -54,33 +66,9 @@ const ScrollHint: React.FC = () => {
 
   return (
     <Wrapper visible={visible}>
-      <Caret delay="3s" viewBox="0 0 36 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path
-          d="M9 10l9 6 9-6"
-          stroke={caretColor}
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </Caret>
-      <Caret delay="3.3s" viewBox="0 0 36 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path
-          d="M9 10l9 6 9-6"
-          stroke={caretColor}
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </Caret>
-      <Caret delay="3.6s" viewBox="0 0 36 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path
-          d="M9 10l9 6 9-6"
-          stroke={caretColor}
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </Caret>
+      <AnimatedCaret delay="3s" />
+      <AnimatedCaret delay="3.3s" />
+      <AnimatedCaret delay="3.6s" />
     </Wrapper>
   );
 };
